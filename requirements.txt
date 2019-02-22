@@ -1,0 +1,6 @@
+Keras
+jupyter
+matplotlib
+scipy
+Pillow
+Tensorflow
