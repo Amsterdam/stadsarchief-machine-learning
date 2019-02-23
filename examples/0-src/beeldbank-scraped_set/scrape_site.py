@@ -1,6 +1,7 @@
 import os
 import urllib
 
+import yaml
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
@@ -8,6 +9,7 @@ from bs4 import BeautifulSoup
 
 
 DOWNLOAD_DIR='./full'
+LABEL_DIR='./labels'
 
 
 def simple_get(url):
@@ -42,36 +44,56 @@ def log_error(e):
     print(e)
 
 
+def write_label(document_type, id):
+    filename = f"{LABEL_DIR}/{id}.yaml"
 
-def get_image(idx):
+    data = dict(
+        type=document_type
+    )
+
+    with open(filename, 'w') as outfile:
+        yaml.dump(data, outfile, default_flow_style=False)
+
+
+def write_image(html, id):
     url_prefix = "https://beeldbank.amsterdam.nl"
-    url = f"https://beeldbank.amsterdam.nl/beeldbank/indeling/detail/start/{idx}?f_sk_documenttype%5B0%5D=bouwtekening"
-    raw_html = simple_get(url)
-    html = BeautifulSoup(raw_html, 'html.parser')
 
     download_link_elements = html.select('a[title="Afbeelding opslaan"]')
     if not download_link_elements:
         log_error('no link found on url')
         return
 
-    parent_el = html.select('li.dc_identifier')
-    id = parent_el[0].findChildren('span')[1].text.strip()
-    print(id)
-
-
     filename = f"{DOWNLOAD_DIR}/{id}.jpg"
     download_link = url_prefix + download_link_elements[0].attrs.get('href')
     print(download_link)
     urllib.request.urlretrieve(download_link, filename)
-    # data = simple_get(download_link)
-    # print(data[:100])
 
 
-def load_images():
+def get_image(document_type, idx):
+    url = f"https://beeldbank.amsterdam.nl/beeldbank/indeling/detail/start/{idx}?f_sk_documenttype%5B0%5D={document_type}"
+    raw_html = simple_get(url)
+    html = BeautifulSoup(raw_html, 'html.parser')
+
+    parent_el = html.select('li.dc_identifier')
+    id = parent_el[0].findChildren('span')[1].text.strip()
+    print(id)
+
+    write_image(html, id)
+    write_label(document_type, id)
+
+
+def load_images(document_type, low=1, high=300):
+    print(document_type)
+    os.makedirs(LABEL_DIR, exist_ok=True)
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
-    for idx in range(30, 1000):
+
+    for idx in range(low, high):
         print(idx)
-        get_image(idx)
+        get_image(document_type, idx)
 
 
-load_images()
+# load_images('bouwtekening', 500, 700)
+# load_images('kaart', 500, 700)
+# load_images('foto', 500, 700)
+# load_images('affiche', 500, 700)
+load_images('prent', 500, 700)
