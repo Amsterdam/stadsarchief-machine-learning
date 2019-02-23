@@ -18,4 +18,11 @@ def list_stats(Y):
     top = [[types[idx], count] for idx, count in unique_counts if count > min_cnt]
     print(f"> {min_cnt} count classes: {top}")
 
+    largest_class = max(unique_counts, key=lambda x: x[1])
+    print(f"largest class: {types[largest_class[0]]}, count: {largest_class[1]}")
+
+    total_count = Y.shape[0]
+    print(f"total count: {total_count}")
+
+    print(f"score to beat: {largest_class[1] / total_count}")
 
