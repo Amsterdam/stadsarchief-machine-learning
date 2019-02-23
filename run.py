@@ -1,10 +1,15 @@
-import numpy as np
-from PIL import Image
-from scipy import misc
+"""
+File to quickly test individual parts of code
+"""
+
 from data import load_data
 
-IMG_DIR = 'examples/0-src/200x200/';
-LABEL_DIR = 'examples/0-src/labels/';
+IMG_DIR = 'examples/0-src/beeldbank-scraped_set/300x300/'
+LABEL_DIR = 'examples/0-src/beeldbank-scraped_set/labels/'
 
 [X, Y] = load_data(IMG_DIR, LABEL_DIR)
-X.shape
+
+print(f"shape X: {X.shape}")
+print(f"shape Y: {Y.shape}")
+
+print(f"Y first few: {Y[:5]}")

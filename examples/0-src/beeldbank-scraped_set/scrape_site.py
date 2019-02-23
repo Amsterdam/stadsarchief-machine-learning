@@ -83,12 +83,11 @@ def get_image(document_type, idx):
 
 
 def load_images(document_type, low=1, high=300):
-    print(document_type)
     os.makedirs(LABEL_DIR, exist_ok=True)
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
     for idx in range(low, high):
-        print(idx)
+        print(f"{document_type}, {idx}")
         get_image(document_type, idx)
 
 
