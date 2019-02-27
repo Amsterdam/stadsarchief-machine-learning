@@ -1,4 +1,5 @@
 import glob
+import math
 import os
 
 import numpy as np
@@ -72,3 +73,22 @@ def load_data(img_dir, label_dir):
 
     return [X, Y]
 
+
+def split_data(X, Y, split):
+    """
+    Split two numpy arrays into two based on split percentage
+    :param X: input numpy array
+    :param Y: output numpy array
+    :param split: fraction of total to apply split.
+    :return:
+    """
+    assert(0.0 < split < 1.0)
+    total = X.shape[0]
+    assert(total > 0)
+    assert(X.shape[0] == Y.shape[0])
+    N = math.floor(split * total)
+    X_train = X[:N]
+    Y_train = Y[:N]
+    X_test = X[N:]
+    Y_test = Y[N:]
+    return (X_train, Y_train), (X_test, Y_test)

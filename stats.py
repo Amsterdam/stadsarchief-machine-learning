@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -49,3 +51,36 @@ def show_train_curves(history):
     plt.xlabel('Epochs ',fontsize=16)
     plt.ylabel('Accuracy',fontsize=16)
     plt.title('Accuracy Curves',fontsize=16)
+
+
+def show_prediction_list(predictions, expected, show_cnt = 30):
+    predictions_classes = np.argmax(predictions, axis=1)
+    print(f"index:      [{' '.join(str(x)[-1:] for x in range(show_cnt))}]")
+    print(f"prediction: {predictions_classes[:show_cnt]}")
+    print(f"expected:   {np.argmax(expected, axis=1)[:show_cnt]}")
+
+
+def show_prediction_images(X, Y, predictions, types, limit=3):
+    columns = 5
+
+    predictions_classes = np.argmax(predictions, axis=1)
+
+    assert(predictions_classes.shape[0] == Y.shape[0])
+    plt.figure(figsize=(20, math.ceil(limit/columns) * 7) )
+
+    images = X[:limit, :, :, :]
+    for i, image in enumerate(images):
+        plt.subplot(len(images) / columns + 1, columns, i + 1)
+        expected = types[Y[i]]
+        predict_confidence = predictions[i, predictions_classes[i]]
+        rounded = str(round(predict_confidence, 2))
+
+        predict_name = types[predictions_classes[i]]
+        is_correct = expected == predict_name
+        if is_correct:
+            plt.gca().set_title(f"{rounded}: {predict_name}\u2713")
+        else:
+            plt.gca().set_title(f"{rounded}: {predict_name} -> {expected}")
+        plt.imshow(image)
+    plt.show()
+
