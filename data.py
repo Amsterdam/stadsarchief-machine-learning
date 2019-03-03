@@ -7,6 +7,8 @@ import yaml
 from PIL import Image
 
 
+from yolo import decypher_line
+
 def load_yaml(path):
     with open(path, 'r') as stream:
         try:
@@ -16,13 +18,20 @@ def load_yaml(path):
     return data
 
 
+def load_yolo(path):
+    with open(path) as fp:
+        lines = fp.readlines()
+        labels = [decypher_line(line) for line in lines]
+    return np.array(labels)
+
+
 def get_image_path(img_dir, id):
     filename = f"{id}.jpg"
     return os.path.join(img_dir, filename)
 
 
-def get_label_path(label_dir, id):
-    filename = f"{id}.yaml"
+def get_label_path(label_dir, id, extension):
+    filename = f"{id}{extension}"
     return os.path.join(label_dir, filename)
 
 
@@ -34,15 +43,23 @@ def load_X(img_dir, ids):
     return np.array(X)
 
 
-def load_Y(label_dir, ids):
+def load_Y_yaml(label_dir, ids):
     Y = []
     for id in ids:
-        path = get_label_path(label_dir, id)
+        path = get_label_path(label_dir, id, '.yaml')
         Y.append(load_yaml(path))
     return Y
 
 
-def build_ids(img_dir, label_dir):
+def load_Y_yolo(label_dir, ids):
+    Y = []
+    for id in ids:
+        path = get_label_path(label_dir, id, '.txt')
+        Y.append(load_yolo(path))
+    return Y
+
+
+def build_ids(img_dir, label_dir, label_extension):
     ids = []
 
     file_paths = glob.glob(f"{img_dir}/*.jpg")
@@ -53,9 +70,12 @@ def build_ids(img_dir, label_dir):
     for fname in file_paths:
         basename = os.path.basename(fname)
         id, _ = os.path.splitext(basename)
-        yaml_path = get_label_path(label_dir, id)
-        if os.path.isfile(yaml_path):
-            ids.append(id)
+        label_path = get_label_path(label_dir, id, extension=label_extension)
+        if os.path.isfile(label_path):
+            if os.stat(label_path).st_size == 0:
+                print(f"label is empty: {id}")
+            else:
+                ids.append(id)
         else:
             print(f"missing label for id: {id}")
 
@@ -63,15 +83,28 @@ def build_ids(img_dir, label_dir):
 
 
 def load_data(img_dir, label_dir):
-    ids = build_ids(img_dir, label_dir)
+    ids = build_ids(img_dir, label_dir, '.yaml')
 
     print(f"first few ids: {ids[:5]}")
 
     X = load_X(img_dir, ids)
-    Y = load_Y(label_dir, ids)
-
+    Y = load_Y_yaml(label_dir, ids)
 
     return [X, Y]
+
+
+def load_recognition_data(img_dir, label_dir):
+    ids = build_ids(img_dir, label_dir, '.txt')
+
+    print(f"first few ids: {ids[:5]}")
+
+    X = np.array([])
+    # X = load_X(img_dir, ids)
+    Y = np.array(load_Y_yolo(label_dir, ids))
+    # Y = np.array([])
+
+    return [X, Y]
+
 
 
 def split_data(X, Y, split):
