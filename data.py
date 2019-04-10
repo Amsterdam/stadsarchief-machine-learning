@@ -7,8 +7,6 @@ import yaml
 from PIL import Image
 
 
-from yolo import decypher_line
-
 def load_yaml(path):
     with open(path, 'r') as stream:
         try:
@@ -16,15 +14,6 @@ def load_yaml(path):
         except yaml.YAMLError as exc:
             print(exc)
     return data
-
-
-def load_yolo(path, filter_class):
-    with open(path) as fp:
-        lines = fp.readlines()
-        labels = [decypher_line(line) for line in lines]
-    filtered = list(filter(lambda x : x[0] == filter_class, labels))
-
-    return np.array(filtered)
 
 
 def get_image_path(img_dir, id):
@@ -50,14 +39,6 @@ def load_Y_yaml(label_dir, ids):
     for id in ids:
         path = get_label_path(label_dir, id, '.yaml')
         Y.append(load_yaml(path))
-    return Y
-
-
-def load_Y_yolo(label_dir, ids, filter_class):
-    Y = []
-    for id in ids:
-        path = get_label_path(label_dir, id, '.txt')
-        Y.append(load_yolo(path, filter_class))
     return Y
 
 
@@ -93,24 +74,6 @@ def load_data(img_dir, label_dir):
     Y = load_Y_yaml(label_dir, ids)
 
     return [X, Y]
-
-
-def load_recognition_data(img_dir, label_dir, obj_path, filter_class=1):
-    with open(obj_path) as fp:
-        lines = fp.readlines()
-        types = [x.strip() for x in lines]
-
-    ids = build_ids(img_dir, label_dir, '.txt')
-
-    print(f"first few ids: {ids[:5]}")
-
-    X = np.array([])
-    # X = load_X(img_dir, ids)
-    Y = np.array(load_Y_yolo(label_dir, ids, filter_class))
-    # Y = np.array([])
-
-    return [X, Y, types]
-
 
 
 def split_data(X, Y, split):
