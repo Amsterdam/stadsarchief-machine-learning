@@ -18,11 +18,13 @@ def load_yaml(path):
     return data
 
 
-def load_yolo(path):
+def load_yolo(path, filter_class):
     with open(path) as fp:
         lines = fp.readlines()
         labels = [decypher_line(line) for line in lines]
-    return np.array(labels)
+    filtered = list(filter(lambda x : x[0] == filter_class, labels))
+
+    return np.array(filtered)
 
 
 def get_image_path(img_dir, id):
@@ -51,11 +53,11 @@ def load_Y_yaml(label_dir, ids):
     return Y
 
 
-def load_Y_yolo(label_dir, ids):
+def load_Y_yolo(label_dir, ids, filter_class):
     Y = []
     for id in ids:
         path = get_label_path(label_dir, id, '.txt')
-        Y.append(load_yolo(path))
+        Y.append(load_yolo(path, filter_class))
     return Y
 
 
@@ -93,17 +95,21 @@ def load_data(img_dir, label_dir):
     return [X, Y]
 
 
-def load_recognition_data(img_dir, label_dir):
+def load_recognition_data(img_dir, label_dir, obj_path, filter_class=1):
+    with open(obj_path) as fp:
+        lines = fp.readlines()
+        types = [x.strip() for x in lines]
+
     ids = build_ids(img_dir, label_dir, '.txt')
 
     print(f"first few ids: {ids[:5]}")
 
     X = np.array([])
     # X = load_X(img_dir, ids)
-    Y = np.array(load_Y_yolo(label_dir, ids))
+    Y = np.array(load_Y_yolo(label_dir, ids, filter_class))
     # Y = np.array([])
 
-    return [X, Y]
+    return [X, Y, types]
 
 
 
