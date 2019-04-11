@@ -18,8 +18,9 @@ def list_stats(Y):
     #     print(unique_counts)
 
     min_cnt = 5
+    print(f"classes with count less than {min_cnt} ignored")
     top = [[types[idx], count] for idx, count in unique_counts if count > min_cnt]
-    print(f"> {min_cnt} count classes: {top}")
+    print(f"count classes: {top}")
 
     largest_class = max(unique_counts, key=lambda x: x[1])
     print(f"largest class: {types[largest_class[0]]}, count: {largest_class[1]}")
