@@ -73,10 +73,10 @@ def load_data(img_dir, label_dir):
     X = load_X(img_dir, ids)
     Y = load_Y_yaml(label_dir, ids)
 
-    return [X, Y]
+    return [X, Y, ids]
 
 
-def split_data(X, Y, split):
+def split_data(X, Y, ids, split):
     """
     Split two numpy arrays into two based on split percentage
     :param X: input numpy array
@@ -91,6 +91,8 @@ def split_data(X, Y, split):
     N = math.floor(split * total)
     X_train = X[:N]
     Y_train = Y[:N]
+    ids_train =  ids[:N]
     X_test = X[N:]
     Y_test = Y[N:]
-    return (X_train, Y_train), (X_test, Y_test)
+    ids_test = ids[N:]
+    return (X_train, Y_train, ids_train), (X_test, Y_test, ids_test)

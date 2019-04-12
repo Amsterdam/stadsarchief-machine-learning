@@ -61,7 +61,7 @@ def show_prediction_list(predictions, expected, show_cnt = 30):
     print(f"expected:   {np.argmax(expected, axis=1)[:show_cnt]}")
 
 
-def show_prediction_images(X, Y, predictions, types, limit=3):
+def show_prediction_images(X, Y, ids, predictions, types, limit=3):
     columns = 5
 
     predictions_classes = np.argmax(predictions, axis=1)
@@ -77,11 +77,12 @@ def show_prediction_images(X, Y, predictions, types, limit=3):
         rounded = str(round(predict_confidence, 2))
 
         predict_name = types[predictions_classes[i]]
+        id = ids[i]
         is_correct = expected == predict_name
         if is_correct:
-            plt.gca().set_title(f"{rounded}: {predict_name}\u2713")
+            plt.gca().set_title(f"{id}, {rounded}: {predict_name}\u2713")
         else:
-            plt.gca().set_title(f"{rounded}: {predict_name} -> {expected}")
+            plt.gca().set_title(f"{id}, {rounded}: {predict_name} -> {expected}")
         plt.imshow(image)
     plt.show()
 
