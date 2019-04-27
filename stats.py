@@ -55,13 +55,21 @@ def show_train_curves(history):
 
 
 def show_prediction_list(predictions, expected, show_cnt = 30):
+    if len(expected.shape) != 1:
+        # Not binary classification
+        expected = np.argmax(expected, axis=1)
+
     predictions_classes = np.argmax(predictions, axis=1)
     print(f"index:      [{' '.join(str(x)[-1:] for x in range(show_cnt))}]")
     print(f"prediction: {predictions_classes[:show_cnt]}")
-    print(f"expected:   {np.argmax(expected, axis=1)[:show_cnt]}")
+    print(f"expected:   {expected[:show_cnt]}")
 
 
 def show_prediction_images(X, Y, ids, predictions, types, limit=3, columns=3):
+    if len(Y.shape) != 1:
+        # Not binary classification
+        Y = np.argmax(Y, axis=1)
+
     predictions_classes = np.argmax(predictions, axis=1)
 
     assert(predictions_classes.shape[0] == Y.shape[0])
