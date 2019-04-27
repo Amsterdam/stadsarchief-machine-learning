@@ -61,9 +61,7 @@ def show_prediction_list(predictions, expected, show_cnt = 30):
     print(f"expected:   {np.argmax(expected, axis=1)[:show_cnt]}")
 
 
-def show_prediction_images(X, Y, ids, predictions, types, limit=3):
-    columns = 5
-
+def show_prediction_images(X, Y, ids, predictions, types, limit=3, columns=3):
     predictions_classes = np.argmax(predictions, axis=1)
 
     assert(predictions_classes.shape[0] == Y.shape[0])
