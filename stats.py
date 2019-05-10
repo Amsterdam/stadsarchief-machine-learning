@@ -92,3 +92,48 @@ def show_prediction_images(X, Y, ids, predictions, types, limit=3, columns=3):
         plt.imshow(image)
     plt.show()
 
+
+def show_prediction_images_new(X, Y, predictions, meta, encoder, limit=3, columns=3):
+    if len(Y.shape) != 1:
+        # Not binary classification
+        Y = np.argmax(Y, axis=1)
+
+    # print(encoder.classes_)
+    # print(predictions[:10])
+
+    # binary classes floating prediction to class prediction
+    predictions_classes = predictions >= 0.5 * 1.0
+    predictions_classes = predictions_classes.astype(np.int)
+
+    # print(predictions_classes[:10])
+    # print(encoder.inverse_transform(predictions_classes)[:10])
+
+    # predictions_classes = np.argmax(predictions, axis=1)
+
+    assert(predictions_classes.shape[0] == Y.shape[0])
+
+    plt.figure(figsize=(20, math.ceil(limit/columns) * 7))
+
+    images = X[:limit, :, :, :]
+    for i, image in enumerate(images):
+        plt.subplot(len(images) / columns + 1, columns, i + 1)
+        expect_class = Y[i]
+        expect_name = encoder.inverse_transform([expect_class])
+        predict_class = predictions_classes[i][0]
+        predict_name = encoder.inverse_transform([predict_class])
+        # print(expect_class)
+        # print(predict_class)
+        # print('---')
+
+        predict_confidence = predictions[i][0]
+        rounded = str(round(predict_confidence, 2))
+
+        id = meta[i].get('reference')
+        is_correct = predict_class == expect_class
+        if is_correct:
+            plt.gca().set_title(f"{id}, {rounded}: {predict_name}\u2713")
+        else:
+            plt.gca().set_title(f"{id}, {rounded}: {predict_name} -> {expect_name}")
+        plt.imshow(image)
+    plt.show()
+

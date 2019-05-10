@@ -2,6 +2,7 @@ import csv
 import urllib
 import urllib.parse
 import urllib.request
+from urllib.error import HTTPError
 
 import yaml
 import os
@@ -67,10 +68,15 @@ def retrieve_dataset(csv_path):
             print(f'{row_idx}: {row}')
 
             if row_idx != 0:  # skip header
-                if len(row) != 7:
+                if len(row) > 7:
                     print(f'skipping invalid row: {row_idx}: {row}')
                     skip_cnt += 1
                 else:
+                    if len(row) < 7:
+                        type = 'unknown'
+                    else:
+                        type = row[6]
+
                     filename = row[4]
 
                     basename, _ = os.path.splitext(filename)
@@ -81,16 +87,21 @@ def retrieve_dataset(csv_path):
 
                     stadsdeel_code = row[0]
                     dossier_nummer = row[1]
+
+                    try:
+                        download_image(stadsdeel_code, dossier_nummer, filename)
+                    except HTTPError as e:
+                        print(f'Download failed row: {row_idx}: {row}, {e}')
+                        skip_cnt += 1
                     write_label(id, {
                         'reference': filename,
-                        'type': row[6],
+                        'type': type,
                         'stadsdeel_code': stadsdeel_code,
                         'dossier_nummer': dossier_nummer,
                         'dossier_type': row[2],
                         'dossier_jaar': row[3],
                     })
 
-                    download_image(stadsdeel_code, dossier_nummer, filename)
 
             row_idx += 1
             if row_idx >= MAX_CNT:
