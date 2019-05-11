@@ -5,3 +5,4 @@ scipy
 Pillow
 Tensorflow
 scikit-learn
+pandas
