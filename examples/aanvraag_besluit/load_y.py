@@ -23,4 +23,7 @@ def create_Y(Ymeta, verbose=False):
         print('--- reducing ---')
         print('\n'.join(classes))
     assert Ytype.shape == Yfilter.shape
+
+    # Yfilter = Yfilter.reshape(-1, 1)
+    # assert Yfilter.ndim == 2
     return Yfilter

@@ -19,8 +19,8 @@ def getInt(value: str):
 
 def load_raw(img_dir, label_dir):
     ids = build_ids(img_dir, label_dir, '.yaml')
-    ids = ids[:30]
-    print("LIMITING IDS")
+    # ids = ids[:30]
+    # print("LIMITING IDS")
     print(f"first few ids: {ids[:5]}")
 
     X = load_X(img_dir, ids)
@@ -40,7 +40,7 @@ def process_attributes(Ymeta: list):
     for y in Ymeta:
         # print(y)
         row_data = {}
-        row_data['dossier_jaar'] = getInt(y.get('dossier_jaar', None))
+        row_data['dossier_jaar'] = getInt(y.get('dossier_jaar', 2050.0))
         row_data['dossier_type'] = y.get('dossier_type', 'onbekend')
         row_data['stadsdeel_code'] = y.get('stadsdeel_code', 'onbekend')
         # for column in headers:
@@ -65,8 +65,6 @@ def preprocess_X(Ximg: np.ndarray, Xdecoded: pd.DataFrame, transformer: Transfor
 
 
 def load_data_aanvraag(set1_dirs, set2_dirs, random_state=42):
-    transformer = Transformer()
-
     print('loading set1')
     [Ximg1, Ymeta1, _] = load_raw(set1_dirs.get('images'), set1_dirs.get('labels'))
 
@@ -84,7 +82,7 @@ def load_data_aanvraag(set1_dirs, set2_dirs, random_state=42):
     Ymeta_train = np.concatenate([Ymeta1, Ymeta_A], axis=0)
 
     print('remaining for test and validation set: ', Ximg_B.shape)
-    Ximg_validation, Ximg_test, Ymeta_valid, Ymeta_test = train_test_split(Ximg_B, Ymeta_B, test_size=0.5, shuffle=True, random_state=random_state)
+    Ximg_valid, Ximg_test, Ymeta_valid, Ymeta_test = train_test_split(Ximg_B, Ymeta_B, test_size=0.5, shuffle=True, random_state=random_state)
     # Xvalid = X_validation
     # Yvalid = np.array(y_validation)
 
@@ -98,11 +96,8 @@ def load_data_aanvraag(set1_dirs, set2_dirs, random_state=42):
     Yvalid = create_Y(Ymeta_valid, verbose=False)
     Ytest = create_Y(Ymeta_test, verbose=False)
 
-    Xdata_mix = Xdata_train.append(Xdata_valid)
-    transformer.fit(Xdata_mix)
+    Xtrain = [Ximg_train, Xdata_train]
+    Xvalid = [Ximg_valid, Xdata_valid]
+    Xtest = [Ximg_test, Xdata_test]
 
-    Xtrain = preprocess_X(Ximg_train, Xdata_train, transformer)
-    Xvalid = preprocess_X(Ximg_validation, Xdata_valid, transformer)
-    Xtest = preprocess_X(Ximg_test, Xdata_test, transformer)
-
-    return [Xtrain, Ytrain, Xvalid, Yvalid, transformer]
+    return [Xtrain, Ytrain, Xvalid, Yvalid]

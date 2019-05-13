@@ -12,7 +12,6 @@ class Transformer(object):
         self.encode(df, do_fit=True)
 
     def encode(self, df: pd.DataFrame, do_fit=False):
-
         input = df['dossier_jaar'].values
         assert input.ndim == 1
         input = input.reshape(-1, 1)
@@ -59,7 +58,7 @@ class Transformer(object):
         return X
 
     def decode(self, data_enc):
-        headers = ['stadsdeel_code', 'dossier_type', 'dossier_jaar']
+        headers = ['dossier_jaar', 'dossier_type', 'stadsdeel_code']
 
         idx = 0
         enc = self.transformers['dossier_jaar']
