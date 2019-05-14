@@ -92,8 +92,8 @@ def load_data_aanvraag(set1_dirs, set2_dirs, random_state=42):
     Xdata_valid = process_attributes(Ymeta_valid)
     Xdata_test = process_attributes(Ymeta_test)
 
-    Ytrain = create_Y(Ymeta_train, verbose=False)
-    Yvalid = create_Y(Ymeta_valid, verbose=False)
+    Ytrain = create_Y(Ymeta_train, verbose=True)
+    Yvalid = create_Y(Ymeta_valid, verbose=True)
     Ytest = create_Y(Ymeta_test, verbose=False)
 
     Xtrain = [Ximg_train, Xdata_train]
