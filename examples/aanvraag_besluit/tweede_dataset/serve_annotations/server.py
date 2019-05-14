@@ -20,6 +20,7 @@ def change_annotation(index_str):
     content = request.json
     index = int(index_str)
     annotationData.set_row_type(index, content.get('document_type'))
+    annotationData.save()
     return jsonify({"done": True})
 
 
