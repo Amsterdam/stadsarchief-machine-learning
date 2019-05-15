@@ -10,7 +10,7 @@ import os
 URL_BASE = os.environ.get('URL_BASE')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-INPUT_CSV = os.path.join(SCRIPT_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK.csv')
+INPUT_CSV = os.path.join(SCRIPT_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK-annotated.csv')
 
 OUT_LABEL_DIR = os.path.join(SCRIPT_DIR, 'labels/')
 OUT_IMG_DIR = os.path.join(SCRIPT_DIR, 'images/')
@@ -21,7 +21,7 @@ TARGET_DIMS = [
     (800, 800,),
 ]
 
-MAX_CNT = 606
+MAX_CNT = 1200
 # MAX_CNT = 10
 
 
