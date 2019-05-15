@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
-from data import build_ids, load_X, load_Y_yaml
+from src.data import build_ids, load_X, load_Y_yaml
 from examples.aanvraag_besluit.load_y import create_Y
 from examples.aanvraag_besluit.transformer import Transformer
 
