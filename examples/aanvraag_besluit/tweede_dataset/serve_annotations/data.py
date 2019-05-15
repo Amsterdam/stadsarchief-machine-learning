@@ -27,10 +27,17 @@ class AnnotationData(object):
         self.df.at[index, 'document_type'] = value
         print(self.df.iloc[index])
 
+    def get_count(self):
+        return self.df.shape[0]
+
+    def get_json_row(self, index):
+        return self.df.iloc[index].to_json()
+
     def get_json(self):
         return self.df.to_json(orient='records')
 
-# data = AnnotationData()
-# data.load_source()
+data = AnnotationData()
+data.load_source()
+print(data.get_json_row(0))
 # data.save()
 
