@@ -24,7 +24,7 @@ def build_vgg16(num_classes, img_dim):
 
 
 lr_alpha=0.1
-drop_chance=0.1
+drop_chance=0.0
 
 
 def create_mlp(num_features, num_classes=None):
@@ -78,6 +78,93 @@ def create_cnn(img_dim, num_classes=None):
     #     x = layers.BatchNormalization()(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
     x = layers.Dropout(drop_chance)(x)
+
+    if num_classes is not None:
+        x = layers.Dense(2, activation="softmax", name='output')(x)
+
+    model = Model(inputs, x)
+    return model
+
+
+def create_cnn_deep(img_dim, num_classes=None):
+    inputs = layers.Input(shape=img_dim, name="input-cnn")
+
+    # Block 1
+    x = layers.Conv2D(64, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block1_conv1')(inputs)
+    x = layers.Conv2D(64, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block1_conv2')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block1_pool')(x)
+
+    # Block 2
+    x = layers.Conv2D(128, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block2_conv1')(x)
+    x = layers.Conv2D(128, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block2_conv2')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block2_pool')(x)
+
+    # Block 3
+    x = layers.Conv2D(256, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block3_conv1')(x)
+    x = layers.Conv2D(256, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block3_conv2')(x)
+    x = layers.Conv2D(256, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block3_conv3')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block3_pool')(x)
+
+    # Block 4
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block4_conv1')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block4_conv2')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block4_conv3')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block4_pool')(x)
+
+    # Block 5
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block5_conv1')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block5_conv2')(x)
+    x = layers.Conv2D(512, (3, 3),
+                      activation='relu',
+                      padding='same',
+                      name='block5_conv3')(x)
+    x = layers.MaxPooling2D((2, 2), strides=(2, 2), name='block5_pool')(x)
+
+    x = layers.Flatten()(x)
+
+    x = layers.Dense(8, kernel_initializer=initializers.RandomUniform())(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+    # x = layers.Dropout(drop_chance)(x)
+
+    x = layers.Dense(8, kernel_initializer=initializers.RandomUniform())(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+    # x = layers.Dropout(drop_chance)(x)
 
     if num_classes is not None:
         x = layers.Dense(2, activation="softmax", name='output')(x)

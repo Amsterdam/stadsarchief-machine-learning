@@ -1,0 +1,8 @@
+Keras
+jupyter
+matplotlib
+scipy
+Pillow
+tensorflow-gpu==1.5
+scikit-learn
+pandas
