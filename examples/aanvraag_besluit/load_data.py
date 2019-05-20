@@ -32,6 +32,11 @@ def preprocess_img(X: np.ndarray):
     assert X.ndim == 4
     assert X.shape[3] == 3  # 3 channels
     Xnorm = X / 255.  # normalize image data between 0 and 1
+    Xnorm = Xnorm * 2.0 - 1.0  # normalize image data between -1 and 1
+
+    print(Xnorm.min())
+    print(Xnorm.max())
+
     return Xnorm
 
 
