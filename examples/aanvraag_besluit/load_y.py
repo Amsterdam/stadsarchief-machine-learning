@@ -14,6 +14,10 @@ def filter_Y(Ytype):
 def create_Y(Ymeta, verbose=False):
     Ytype = extract_type(Ymeta)
     classes = list(set(Ytype))
+
+    for y in Ytype:
+        assert isinstance(y, str) and len(y) > 0, f'Label value not acceptable: "{y}"'
+
     if verbose:
         print('--- Classes ---')
         print('\n'.join(classes))

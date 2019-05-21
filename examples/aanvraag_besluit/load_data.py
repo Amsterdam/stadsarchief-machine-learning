@@ -1,3 +1,5 @@
+from itertools import compress
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -17,6 +19,19 @@ def getInt(value: str):
         return None
 
 
+def filter_empty_label(Ximg: np.ndarray, yaml: list, ids: list):
+    bool_arr = [item.get('type') != '' for item in yaml]
+
+    ids_filtered = list(compress(ids, bool_arr))
+    yaml_filtered = list(compress(yaml, bool_arr))
+    Ximg_filtered = Ximg[bool_arr]
+    return [
+        Ximg_filtered,
+        yaml_filtered,
+        ids_filtered
+    ]
+
+
 def load_raw(img_dir, label_dir):
     ids = build_ids(img_dir, label_dir, '.yaml')
     # ids = ids[:30]
@@ -25,13 +40,15 @@ def load_raw(img_dir, label_dir):
 
     X = load_X(img_dir, ids)
     Y = load_Y_yaml(label_dir, ids)
-    return [X, Y, ids]
+
+    return filter_empty_label(X, Y, ids)
 
 
 def preprocess_img(X: np.ndarray):
     assert X.ndim == 4
     assert X.shape[3] == 3  # 3 channels
-    Xnorm = X / 255.  # normalize image data between 0 and 1
+    Xnorm = X.astype(np.float32)
+    Xnorm = Xnorm / 255.  # normalize image data between 0 and 1
     Xnorm = Xnorm * 2.0 - 1.0  # normalize image data between -1 and 1
 
     print(Xnorm.min())
@@ -43,11 +60,11 @@ def preprocess_img(X: np.ndarray):
 def process_attributes(Ymeta: list):
     data = []
     for y in Ymeta:
-        # print(y)
         row_data = {}
         row_data['dossier_jaar'] = getInt(y.get('dossier_jaar', 2050.0))
         row_data['dossier_type'] = y.get('dossier_type', 'onbekend')
         row_data['stadsdeel_code'] = y.get('stadsdeel_code', 'onbekend')
+        row_data['reference'] = y.get('reference')
         # for column in headers:
         #     row_data[column] = y.get(column, None)
         data.append(row_data)
@@ -72,9 +89,11 @@ def preprocess_X(Ximg: np.ndarray, Xdecoded: pd.DataFrame, transformer: Transfor
 def load_data_aanvraag(set1_dirs, set2_dirs, random_state=42):
     print('loading set1')
     [Ximg1, Ymeta1, _] = load_raw(set1_dirs.get('images'), set1_dirs.get('labels'))
+    print(f'size: {Ximg1.shape}')
 
     print('loading set2')
     [Ximg2, Ymeta2, _] = load_raw(set2_dirs.get('images'), set2_dirs.get('labels'))
+    print(f'size: {Ximg2.shape}')
 
     #
     # Form train, validation and test sets
@@ -82,14 +101,26 @@ def load_data_aanvraag(set1_dirs, set2_dirs, random_state=42):
     #
     print('Configuring train, validation and test sets:')
     Ximg_A, Ximg_B, Ymeta_A, Ymeta_B = train_test_split(Ximg2, Ymeta2, test_size=1.0 - 0.33, shuffle=True, random_state=random_state)
+    # Ximg_A, Ximg_B, Ymeta_A, Ymeta_B = train_test_split(Ximg2, Ymeta2, test_size=0.3, shuffle=True, random_state=random_state)
+
     print('adding to train set: ', Ximg_A.shape)
     Ximg_train = np.concatenate([Ximg1, Ximg_A], axis=0)
     Ymeta_train = np.concatenate([Ymeta1, Ymeta_A], axis=0)
 
+    # START
+    # print('skipping test set, putting everything into training set: ')
+    # Xdata_train = process_attributes(Ymeta_train)
+    # Xdata_valid = process_attributes(Ymeta_B)
+    #
+    # Ytrain = create_Y(Ymeta_train, verbose=True)
+    # Yvalid = create_Y(Ymeta_B, verbose=True)
+    #
+    # Xtrain = [Ximg_train, Xdata_train]
+    # Xvalid = [Ximg_B, Xdata_valid]
+    # END
+
     print('remaining for test and validation set: ', Ximg_B.shape)
     Ximg_valid, Ximg_test, Ymeta_valid, Ymeta_test = train_test_split(Ximg_B, Ymeta_B, test_size=0.5, shuffle=True, random_state=random_state)
-    # Xvalid = X_validation
-    # Yvalid = np.array(y_validation)
 
     print("not using test set of shape: ", Ximg_test.shape)
 

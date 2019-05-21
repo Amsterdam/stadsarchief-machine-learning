@@ -24,23 +24,23 @@ def build_vgg16(num_classes, img_dim):
 
 
 lr_alpha = 0.1
-drop_chance = 0.2
+drop_chance = 0.0
 
 
 def create_mlp(num_features, num_classes=None):
     model = Sequential()
-    model.add(layers.Dense(64, input_dim=num_features, name="input-mlp"))
+    model.add(layers.Dense(64, input_dim=num_features, kernel_initializer='glorot_normal', name="input-mlp"))
     #     model.add(layers.BatchNormalization())
     model.add(layers.LeakyReLU(alpha=lr_alpha))
     model.add(layers.Dropout(drop_chance))
 
-    model.add(layers.Dense(64))
+    model.add(layers.Dense(64, kernel_initializer='glorot_normal'))
     #     model.add(layers.BatchNormalization())
     model.add(layers.LeakyReLU(alpha=lr_alpha))
     model.add(layers.Dropout(drop_chance))
 
     if num_classes is not None:
-        model.add(layers.Dense(2, activation='softmax'))
+        model.add(layers.Dense(2, kernel_initializer='glorot_normal', activation='softmax'))
 
     return model
 
@@ -48,105 +48,39 @@ def create_mlp(num_features, num_classes=None):
 def create_cnn(img_dim, num_classes=None):
     inputs = layers.Input(shape=img_dim, name="input-cnn")
 
-    x = layers.Conv2D(16, (3, 3), use_bias=False)(inputs)
-    x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
-
-    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
-
-    x = layers.Conv2D(32, (3, 3), use_bias=False)(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
-
-    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
-
-    x = layers.Conv2D(32, (3, 3), use_bias=False)(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
-
-    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
-
-    x = layers.Conv2D(32, (3, 3), use_bias=False)(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
-
-    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
-
-    x = layers.Flatten()(x)
-
-    x = layers.Dense(16, kernel_initializer = initializers.RandomUniform())(x)
-    x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
-    x = layers.Dropout(drop_chance)(x)
-
-    if num_classes is not None:
-        x = layers.Dense(2, activation="softmax", name='output')(x)
-
-    model = Model(inputs, x)
-    return model
-
-
-def create_cnn_e(img_dim, num_classes=None):
-    inputs = layers.Input(shape=img_dim, name="input-cnn")
-
     batch_norm = False
     use_bias = not batch_norm
 
-    x = layers.Conv2D(16, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(inputs)
-    if batch_norm:
-        x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(16, (3, 3), kernel_initializer='glorot_normal')(inputs)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
 
     x = layers.MaxPooling2D(pool_size=(2, 2))(x)
 
-    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(x)
-    if batch_norm:
-        x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal')(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
 
     x = layers.MaxPooling2D(pool_size=(2, 2))(x)
 
-    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(x)
-    if batch_norm:
-        x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal')(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
 
     x = layers.MaxPooling2D(pool_size=(2, 2))(x)
 
-    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(x)
-    if batch_norm:
-        x = layers.BatchNormalization()(x)
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal')(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
 
     x = layers.MaxPooling2D(pool_size=(2, 2))(x)
 
     x = layers.Flatten()(x)
 
-    x = layers.Dense(128, kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    x = layers.Dense(16, kernel_initializer='glorot_normal', use_bias=use_bias)(x)
     if batch_norm:
         x = layers.BatchNormalization()(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
     x = layers.Dropout(drop_chance)(x)
-
-    x = layers.Dense(128, kernel_initializer='glorot_normal', use_bias=use_bias)(x)
-    if batch_norm:
-        x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
-    x = layers.Dropout(drop_chance)(x)
-
-    x = layers.Flatten(name='flatten')(x)
-    x = layers.Dense(512, name='fc1', kernel_initializer='glorot_normal', use_bias=use_bias)(x)
-    if batch_norm:
-        x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
-
-    x = layers.Dense(512, name='fc2', kernel_initializer='glorot_normal', use_bias=use_bias)(x)
-    if batch_norm:
-        x = layers.BatchNormalization()(x)
-    x = layers.LeakyReLU(alpha=lr_alpha)(x)
 
     if num_classes is not None:
-        x = layers.Dense(2, activation="softmax", name='output')(x)
+        x = layers.Dense(2, kernel_initializer='glorot_normal', activation="softmax", name='output')(x)
 
     model = Model(inputs, x)
     return model
@@ -239,6 +173,34 @@ def create_cnn_f(img_dim, num_classes=None):
     model = Model(inputs, x)
     return model
 
+
+def build_multi_feature(num_classes, img_dim, num_features):
+    # Multi feature system based on https://www.pyimagesearch.com/2019/02/04/keras-multiple-inputs-and-mixed-data/
+    print('img_dim: ', img_dim)
+    print('num_features: ', num_features)
+
+    # create the MLP and CNN models
+    mlp = create_mlp(num_features)
+    cnn = create_cnn(img_dim)
+
+    # Merge the two branches
+    combinedInput = layers.concatenate([mlp.output, cnn.output])
+
+    # Final logic
+    x = layers.Dense(8, activation="relu")(combinedInput)
+    x = layers.Dropout(drop_chance)(x)
+
+    x = layers.Dense(num_classes, activation="softmax", name='output')(x)
+
+    # our final model will accept categorical/numerical data on the MLP
+    # input and images on the CNN input
+    # Output: softmax
+    model = Model(inputs=[cnn.input, mlp.input], outputs=x)
+    return model
+
+#
+# OLD models
+#
 
 def create_cnn_deep_a(img_dim, num_classes=None):
     inputs = layers.Input(shape=img_dim, name="input-cnn")
@@ -601,27 +563,67 @@ def create_cnn_deep_d(img_dim, num_classes=None):
     return model
 
 
+def create_cnn_e(img_dim, num_classes=None):
+    inputs = layers.Input(shape=img_dim, name="input-cnn")
 
-def build_multi_feature(num_classes, img_dim, num_features):
-    # Multi feature system based on https://www.pyimagesearch.com/2019/02/04/keras-multiple-inputs-and-mixed-data/
-    print('img_dim: ', img_dim)
-    print('num_features: ', num_features)
+    batch_norm = False
+    use_bias = not batch_norm
 
-    # create the MLP and CNN models
-    mlp = create_mlp(num_features)
-    cnn = create_cnn(img_dim)
+    x = layers.Conv2D(16, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(inputs)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
 
-    # Merge the two branches
-    combinedInput = layers.concatenate([mlp.output, cnn.output])
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
 
-    # Final logic
-    x = layers.Dense(8, activation="relu")(combinedInput)
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+
+    x = layers.Flatten()(x)
+
+    x = layers.Dense(128, kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
     x = layers.Dropout(drop_chance)(x)
 
-    x = layers.Dense(num_classes, activation="softmax", name='output')(x)
+    x = layers.Dense(128, kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+    x = layers.Dropout(drop_chance)(x)
 
-    # our final model will accept categorical/numerical data on the MLP
-    # input and images on the CNN input
-    # Output: softmax
-    model = Model(inputs=[cnn.input, mlp.input], outputs=x)
+    x = layers.Flatten(name='flatten')(x)
+    x = layers.Dense(512, name='fc1', kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.Dense(512, name='fc2', kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    if num_classes is not None:
+        x = layers.Dense(2, activation="softmax", name='output')(x)
+
+    model = Model(inputs, x)
     return model

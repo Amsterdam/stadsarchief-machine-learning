@@ -65,25 +65,31 @@ def show_prediction_list(predictions, expected, show_cnt = 30):
     print(f"expected:   {expected[:show_cnt]}")
 
 
-def show_prediction_images(X, Y, ids, predictions, types, limit=3, columns=3):
-    if len(Y.shape) != 1:
-        # Not binary classification
-        Y = np.argmax(Y, axis=1)
+def show_prediction_images(X:np.ndarray, Y:np.ndarray, predictions, references, Yenc, limit=3, columns=3):
+    # if len(Y.shape) != 1:
+    #     # Not binary classification
+    #     Y = np.argmax(Y, axis=1)
+    #     Y = Y.reshape(-1, 1)
 
-    predictions_classes = np.argmax(predictions, axis=1)
+    predictions_id = np.argmax(predictions, axis=1)
+    # predictions_id = predictions_id.reshape(-1, 1)
 
-    assert(predictions_classes.shape[0] == Y.shape[0])
+    assert(predictions.shape[0] == Y.shape[0])
+
+    y_class = Yenc.inverse_transform(Y)
+    pred_class = Yenc.inverse_transform(predictions)
+
     plt.figure(figsize=(20, math.ceil(limit/columns) * 7) )
 
     images = X[:limit, :, :, :]
     for i, image in enumerate(images):
         plt.subplot(len(images) / columns + 1, columns, i + 1)
-        expected = types[Y[i]]
-        predict_confidence = predictions[i, predictions_classes[i]]
+        expected = y_class[i]
+        predict_confidence = predictions[i, predictions_id[i]]
         rounded = str(round(predict_confidence, 2))
 
-        predict_name = types[predictions_classes[i]]
-        id = ids[i]
+        predict_name = pred_class[i]
+        id = references[i]
         is_correct = expected == predict_name
         if is_correct:
             plt.gca().set_title(f"{id}, {rounded}: {predict_name}\u2713")
