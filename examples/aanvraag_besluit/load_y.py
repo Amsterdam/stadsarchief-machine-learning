@@ -8,7 +8,7 @@ def extract_type(Ymeta):
 
 # All possible classes to "aanvraag" and "other"
 def filter_Y(Ytype):
-    return ['aanvraag' if 'aanvraag' in x else 'other' for x in Ytype]
+    return ['aanvraag' if x == 'aanvraag' else 'other' for x in Ytype]
 
 
 def create_Y(Ymeta, verbose=False):
