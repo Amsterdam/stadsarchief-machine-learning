@@ -1,4 +1,5 @@
 Keras
+keras_metrics
 jupyter
 matplotlib
 scipy
