@@ -7,7 +7,6 @@ from sklearn.utils import shuffle
 
 from src.data import build_ids, load_X, load_Y_yaml
 from examples.aanvraag_besluit.load_y import create_Y
-from examples.aanvraag_besluit.transformer import Transformer
 
 
 def getInt(value: str):
@@ -44,17 +43,17 @@ def load_raw(img_dir, label_dir):
     return filter_empty_label(X, Y, ids)
 
 
-def preprocess_img(X: np.ndarray):
-    assert X.ndim == 4
-    assert X.shape[3] == 3  # 3 channels
-    Xnorm = X.astype(np.float32)
-    Xnorm = Xnorm / 255.  # normalize image data between 0 and 1
-    Xnorm = Xnorm * 2.0 - 1.0  # normalize image data between -1 and 1
-
-    print(Xnorm.min())
-    print(Xnorm.max())
-
-    return Xnorm
+# def preprocess_img(X: np.ndarray):
+#     assert X.ndim == 4
+#     assert X.shape[3] == 3  # 3 channels
+#     Xnorm = X.astype(np.float32)
+#     Xnorm = Xnorm / 255.  # normalize image data between 0 and 1
+#     Xnorm = Xnorm * 2.0 - 1.0  # normalize image data between -1 and 1
+#
+#     print(Xnorm.min())
+#     print(Xnorm.max())
+#
+#     return Xnorm
 
 
 def process_attributes(Ymeta: list):
@@ -72,18 +71,18 @@ def process_attributes(Ymeta: list):
     return df
 
 
-def preprocess_X(Ximg: np.ndarray, Xdecoded: pd.DataFrame, transformer: Transformer):
-    Ximg = preprocess_img(Ximg)
-
-    Xdata = transformer.encode(Xdecoded)
-    X = [Ximg, Xdata]
-
-    # print('Xdecoded', Xdecoded[:4])
-    # print('Xdata', Xdata[:4])
-    XdecodedB = transformer.decode(Xdata)
-    # print('XdecodedB', XdecodedB[:4])
-
-    return X
+# def preprocess_X(Ximg: np.ndarray, Xdecoded: pd.DataFrame, transformer: Transformer):
+#     Ximg = preprocess_img(Ximg)
+#
+#     Xdata = transformer.encode(Xdecoded)
+#     X = [Ximg, Xdata]
+#
+#     # print('Xdecoded', Xdecoded[:4])
+#     # print('Xdata', Xdata[:4])
+#     XdecodedB = transformer.decode(Xdata)
+#     # print('XdecodedB', XdecodedB[:4])
+#
+#     return X
 
 
 def load_data_aanvraag(set1_dirs, set2_dirs, random_state=42):

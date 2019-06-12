@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, LabelBinarizer
 
 
-class Transformer(object):
+class FeatureEncoder(object):
 
     def __init__(self):
         self.transformers = {}
@@ -11,7 +11,7 @@ class Transformer(object):
     def fit(self, df: pd.DataFrame):
         self.encode(df, do_fit=True)
 
-    def encode(self, df: pd.DataFrame, do_fit=False):
+    def transform(self, df: pd.DataFrame, do_fit=False):
         input = df['dossier_jaar'].values
         assert input.ndim == 1
         input = input.reshape(-1, 1)
@@ -57,7 +57,7 @@ class Transformer(object):
         # print(X[:3])
         return X
 
-    def decode(self, data_enc):
+    def inverse_transform(self, data_enc):
         headers = ['dossier_jaar', 'dossier_type', 'stadsdeel_code']
 
         idx = 0
