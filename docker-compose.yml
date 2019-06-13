@@ -1,0 +1,18 @@
+version: '2.0'
+services:
+  predict:
+    build: ./src/
+    volumes:
+      - ./src/:/app
+      - ./input:/app/input
+      - ./output:/app/output
+    environment:
+      - IIIF_API_ROOT
+      - IIIF_CACHE_DIR
+      - INPUT_JSON=./input/list_to_predict.json
+      - OUTPUT_DIR=./output/predict/
+      - MODEL_DIR=./output/model/
+    command: "python /app/run_prediction.py"
+#    stdin_open: true
+#    tty: true
+#    command: "/bin/bash"

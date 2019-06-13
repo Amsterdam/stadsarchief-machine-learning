@@ -1,14 +1,13 @@
-from typing import List
 import numpy as np
 from PIL import Image
 from keras.engine.saving import model_from_json
 
-from config import IIIF_ROOT, IIIF_IMAGE_DIR, TRANSFORM_DIR, MODEL_JSON, MODEL_WEIGHTS
-from iiif import IIIFClient
-from src.processing.ImageFeatureEncoder import ImageFeatureEncoder
-from src.processing.TargetEncoder import TargetEncoder
+from predict.config import TRANSFORM_DIR, IIIF_API_ROOT, IIIF_CACHE_DIR, MODEL_JSON, MODEL_WEIGHTS
+from predict.iiif import IIIFClient
+from processing.ImageFeatureEncoder import ImageFeatureEncoder
+from processing.TargetEncoder import TargetEncoder
 
-iiifClient = IIIFClient(IIIF_ROOT, IIIF_IMAGE_DIR)
+iiifClient = IIIFClient(IIIF_API_ROOT, IIIF_CACHE_DIR)
 
 
 imageEncoder = ImageFeatureEncoder()
@@ -27,7 +26,7 @@ model.load_weights(MODEL_WEIGHTS)
 print("Loaded model from disk")
 
 
-def run_inference_single(element):
+def predict_single(element):
     # Get data
     dim = [250, 250]
     stadsdeel_code = element.get('stadsdeel_code')

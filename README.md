@@ -1,5 +1,5 @@
 
-Automatic recognition, classification and OCR of stadsarchief archive images.
+Classification of bouwdossiers
 
 # Development
 
@@ -9,11 +9,10 @@ Open jupyter as on the web site listed in the terminal and open `TrainClassifier
 
 
 
-# Labeling
+# Model persistence
 
-```
-./Yolo_mark/yolo_mark \
-	examples/0-src/architect_set_object_recognition/full/ \
-	examples/0-src/architect_set_object_recognition/train.txt \
-	examples/0-src/architect_set_object_recognition/obj.names
-```
+The full model is stored in multiple files:
+* model/model.json, Keras model architecture
+* model/weights.json, Keras model weights
+* model/transform/image_encoder.npy, image preprocessing encoder configuration
+* model/transform/target_encoder.npy, label encoder configuration 

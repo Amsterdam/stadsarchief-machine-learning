@@ -36,25 +36,25 @@ def show_train_curves(history):
     based on: https://www.learnopencv.com/image-classification-using-convolutional-neural-networks-in-keras/
     """
     # Loss Curves
-    plt.figure(figsize=[8,6])
-    plt.plot(history.history['loss'],'r',linewidth=3.0)
-    plt.plot(history.history['val_loss'],'b',linewidth=3.0)
-    plt.legend(['Training loss', 'Validation Loss'],fontsize=18)
-    plt.xlabel('Epochs ',fontsize=16)
-    plt.ylabel('Loss',fontsize=16)
-    plt.title('Loss Curves',fontsize=16)
+    plt.figure(figsize=[8, 6])
+    plt.plot(history.history['loss'], 'r', linewidth=3.0)
+    plt.plot(history.history['val_loss'], 'b', linewidth=3.0)
+    plt.legend(['Training loss', 'Validation Loss'], fontsize=18)
+    plt.xlabel('Epochs ', fontsize=16)
+    plt.ylabel('Loss', fontsize=16)
+    plt.title('Loss Curves', fontsize=16)
 
     # Accuracy Curves
-    plt.figure(figsize=[8,6])
-    plt.plot(history.history['acc'],'r',linewidth=3.0)
-    plt.plot(history.history['val_acc'],'b',linewidth=3.0)
-    plt.legend(['Training Accuracy', 'Validation Accuracy'],fontsize=18)
-    plt.xlabel('Epochs ',fontsize=16)
-    plt.ylabel('Accuracy',fontsize=16)
-    plt.title('Accuracy Curves',fontsize=16)
+    plt.figure(figsize=[8, 6])
+    plt.plot(history.history['acc'], 'r', linewidth=3.0)
+    plt.plot(history.history['val_acc'], 'b', linewidth=3.0)
+    plt.legend(['Training Accuracy', 'Validation Accuracy'], fontsize=18)
+    plt.xlabel('Epochs ', fontsize=16)
+    plt.ylabel('Accuracy', fontsize=16)
+    plt.title('Accuracy Curves', fontsize=16)
 
 
-def show_prediction_list(predictions, expected, show_cnt = 30):
+def show_prediction_list(predictions, expected, show_cnt=30):
     if len(expected.shape) != 1:
         # Not binary classification
         expected = np.argmax(expected, axis=1)
@@ -65,7 +65,7 @@ def show_prediction_list(predictions, expected, show_cnt = 30):
     print(f"expected:   {expected[:show_cnt]}")
 
 
-def show_prediction_images(X:np.ndarray, Y:np.ndarray, predictions, references, Yenc, limit=3, columns=3):
+def show_prediction_images(X: np.ndarray, Y: np.ndarray, predictions, references, Yenc, limit=3, columns=3):
     # if len(Y.shape) != 1:
     #     # Not binary classification
     #     Y = np.argmax(Y, axis=1)
@@ -74,12 +74,12 @@ def show_prediction_images(X:np.ndarray, Y:np.ndarray, predictions, references, 
     predictions_id = np.argmax(predictions, axis=1)
     # predictions_id = predictions_id.reshape(-1, 1)
 
-    assert(predictions.shape[0] == Y.shape[0])
+    assert (predictions.shape[0] == Y.shape[0])
 
     y_class = Yenc.inverse_transform(Y)
     pred_class = Yenc.inverse_transform(predictions)
 
-    plt.figure(figsize=(20, math.ceil(limit/columns) * 7) )
+    plt.figure(figsize=(20, math.ceil(limit / columns) * 7))
 
     images = X[:limit, :, :, :]
     for i, image in enumerate(images):
@@ -116,9 +116,9 @@ def show_prediction_images_new(X, Y, predictions, meta, encoder, limit=3, column
 
     # predictions_classes = np.argmax(predictions, axis=1)
 
-    assert(predictions_classes.shape[0] == Y.shape[0])
+    assert (predictions_classes.shape[0] == Y.shape[0])
 
-    plt.figure(figsize=(20, math.ceil(limit/columns) * 7))
+    plt.figure(figsize=(20, math.ceil(limit / columns) * 7))
 
     images = X[:limit, :, :, :]
     for i, image in enumerate(images):
@@ -142,4 +142,3 @@ def show_prediction_images_new(X, Y, predictions, meta, encoder, limit=3, column
             plt.gca().set_title(f"{id}, {rounded}: {predict_name} -> {expect_name}")
         plt.imshow(image)
     plt.show()
-

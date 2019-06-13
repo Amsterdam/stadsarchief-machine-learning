@@ -4,19 +4,16 @@ import time
 
 import pandas as pd
 
-import config  # load environment variables
-from inference import run_inference_single
-
-INPUT_JSON = os.getenv("INPUT_JSON")
-assert INPUT_JSON is not None
+from predict.config import OUTPUT_DIR, INPUT_JSON
+from predict.predict import predict_single
 
 
 def write_csv(data):
     df = pd.DataFrame(data)
-    df.to_csv(os.path.join(config.OUTPUT_DIR, 'results.csv'))
+    df.to_csv(os.path.join(OUTPUT_DIR, 'results.csv'))
 
 
-def run_inference():
+def perform_prediction():
     with open(INPUT_JSON) as f:
         data = json.load(f)
 
@@ -26,7 +23,7 @@ def run_inference():
 
     t0 = time.time()
     for element in dataset:
-        prediction, confidence = run_inference_single(element)
+        prediction, confidence = predict_single(element)
 
         results.append({
             **element,
@@ -43,7 +40,7 @@ def run_inference():
 
 t0 = time.time()
 
-run_inference()
+perform_prediction()
 
 difference = time.time() - t0
 print(f'total script time: {round(difference, 3)}s')

@@ -1,5 +1,6 @@
-.venv
+.env
 .idea
+.venv
 .ipynb_checkpoints
 examples
 src

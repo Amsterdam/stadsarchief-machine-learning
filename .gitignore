@@ -1,6 +1,8 @@
-/examples/
+.env
 .ipynb_checkpoints/
+/examples/
 /Yolo_mark/
+/input/
 /output/
 /logs/
 cache/
