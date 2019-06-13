@@ -1,11 +1,16 @@
 import json
 import os
+import sys
 import time
 
 import pandas as pd
 
-from predict.config import OUTPUT_DIR, INPUT_JSON
+from predict.config import OUTPUT_DIR
 from predict.predict import predict_single
+
+
+assert len(sys.argv) == 2
+input_json = sys.argv[1]
 
 
 def write_csv(data):
@@ -13,8 +18,8 @@ def write_csv(data):
     df.to_csv(os.path.join(OUTPUT_DIR, 'results.csv'))
 
 
-def perform_prediction():
-    with open(INPUT_JSON) as f:
+def perform_prediction(input_json):
+    with open(input_json) as f:
         data = json.load(f)
 
     dataset = data.get('data')
@@ -40,7 +45,7 @@ def perform_prediction():
 
 t0 = time.time()
 
-perform_prediction()
+perform_prediction(input_json)
 
 difference = time.time() - t0
 print(f'total script time: {round(difference, 3)}s')

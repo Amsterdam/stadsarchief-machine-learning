@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 from PIL import Image
 from keras.engine.saving import model_from_json
@@ -7,8 +9,9 @@ from predict.iiif import IIIFClient
 from processing.ImageFeatureEncoder import ImageFeatureEncoder
 from processing.TargetEncoder import TargetEncoder
 
-iiifClient = IIIFClient(IIIF_API_ROOT, IIIF_CACHE_DIR)
+log = logging.getLogger(__name__)
 
+iiifClient = IIIFClient(IIIF_API_ROOT, IIIF_CACHE_DIR)
 
 imageEncoder = ImageFeatureEncoder()
 imageEncoder.load(TRANSFORM_DIR)
@@ -16,7 +19,7 @@ imageEncoder.load(TRANSFORM_DIR)
 targetEncoder = TargetEncoder()
 targetEncoder.load(TRANSFORM_DIR)
 
-print('Loading model')
+print(f'Loading model: {MODEL_JSON}')
 json_file = open(MODEL_JSON, 'r')
 loaded_model_json = json_file.read()
 json_file.close()
