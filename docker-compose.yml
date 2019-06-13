@@ -7,12 +7,11 @@ services:
       - ./input:/app/input
       - ./output:/app/output
     environment:
-      - IIIF_API_ROOT
-      - IIIF_CACHE_DIR
       - INPUT_JSON=./input/list_to_predict.json
       - OUTPUT_DIR=./output/predict/
       - MODEL_DIR=./output/model/
+      - IIIF_API_ROOT
+      - IIIF_CACHE_DIR
+      - TMP_DIR
+      - BOUWDOSSIERS_OBJECTSTORE_PASSWORD
     command: "python /app/run_prediction.py"
-#    stdin_open: true
-#    tty: true
-#    command: "/bin/bash"

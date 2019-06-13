@@ -7,3 +7,4 @@ Pillow
 Tensorflow
 scikit-learn
 pandas
+datapunt-objectstore
