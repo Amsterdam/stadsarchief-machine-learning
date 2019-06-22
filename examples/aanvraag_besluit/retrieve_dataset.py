@@ -10,10 +10,12 @@ import os
 URL_BASE = os.environ.get('URL_BASE')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-INPUT_CSV = os.path.join(SCRIPT_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK-annotated.csv')
+DATASET_DIR = os.path.join(SCRIPT_DIR, 'derde_dataset')
+# INPUT_CSV = os.path.join(DATASET_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK-annotated.csv')
+INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZuidOost_aanvragen_20190616.csv')
 
-OUT_LABEL_DIR = os.path.join(SCRIPT_DIR, 'labels/')
-OUT_IMG_DIR = os.path.join(SCRIPT_DIR, 'images/')
+OUT_LABEL_DIR = os.path.join(DATASET_DIR, 'labels/')
+OUT_IMG_DIR = os.path.join(DATASET_DIR, 'images/')
 
 TARGET_DIMS = [
     (250, 250,),
@@ -22,7 +24,8 @@ TARGET_DIMS = [
     # (1200, 1200,),
 ]
 
-MAX_CNT = 2000
+MAX_CNT = 99999
+# MAX_CNT = 2000
 # MAX_CNT = 10
 
 
@@ -73,10 +76,12 @@ def retrieve_dataset(csv_path):
                     print(f'skipping invalid row: {row_idx}: {row}')
                     skip_cnt += 1
                 else:
-                    if len(row) < 7:
-                        type = 'unknown'
-                    else:
-                        type = row[6]
+                    type = 'aanvraag'
+
+                    # if len(row) < 7:
+                    #     type = 'unknown'
+                    # else:
+                    #     type = row[6]
 
                     filename = row[4]
 
@@ -102,7 +107,6 @@ def retrieve_dataset(csv_path):
                         'dossier_type': row[2],
                         'dossier_jaar': row[3],
                     })
-
 
             row_idx += 1
             if row_idx >= MAX_CNT:
