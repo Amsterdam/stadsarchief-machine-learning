@@ -18,9 +18,7 @@ class ImageFeatureEncoder:
         assert X.shape[3] == 3  # 3 channels
         assert np.array_equal(X.shape[1:], self.shape), f'encoder not tuned for parameters {self.shape}'
 
-        Xnorm = X.astype(np.float32)
-        Xnorm = Xnorm / 255.  # normalize image data between 0 and 1
-        Xnorm = Xnorm * 2.0 - 1.0  # normalize image data between -1 and 1
+        Xnorm = X.astype(np.float16) / 255. * 2.0 - 1.0  # normalize image data between -1 and 1
         return Xnorm
 
     def save(self, directory):
