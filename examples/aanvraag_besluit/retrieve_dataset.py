@@ -1,4 +1,5 @@
 import csv
+import time
 import urllib
 import urllib.parse
 import urllib.request
@@ -10,9 +11,11 @@ import os
 URL_BASE = os.environ.get('URL_BASE')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-DATASET_DIR = os.path.join(SCRIPT_DIR, 'derde_dataset')
-# INPUT_CSV = os.path.join(DATASET_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK-annotated.csv')
-INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZuidOost_aanvragen_20190616.csv')
+DATASET_DIR = os.path.join(SCRIPT_DIR, 'tweede_dataset')
+INPUT_CSV = os.path.join(DATASET_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK-annotated.csv')
+# DATASET_DIR = os.path.join(SCRIPT_DIR, 'derde_dataset')
+# INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZuidOost_aanvragen_20190616.csv')  # Don't forget to also force type
+# INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZuidOost_niet_aanvragen_20190616.csv')
 
 OUT_LABEL_DIR = os.path.join(DATASET_DIR, 'labels/')
 OUT_IMG_DIR = os.path.join(DATASET_DIR, 'images/')
@@ -25,6 +28,8 @@ TARGET_DIMS = [
 ]
 
 MAX_CNT = 99999
+
+
 # MAX_CNT = 2000
 # MAX_CNT = 10
 
@@ -39,24 +44,46 @@ def get_image_dir(dim):
     return os.path.join(OUT_IMG_DIR, f'{dim[0]}x{dim[1]}/')
 
 
+def actually_download(url, target_file):
+    total_tries = 3
+    remaining_tries = 3
+    sleep_seconds = 3
+
+    while remaining_tries > 0:
+        try:
+            urllib.request.urlretrieve(url, target_file)
+        except IOError as e:
+            print(f'error downloading {url} on try: {str(total_tries - remaining_tries)}. Excpetion: {str(e)}')
+            print(f'sleeping {sleep_seconds}s')
+            time.sleep(sleep_seconds)
+            remaining_tries -= 1
+            continue
+        else:
+            break
+
+
 def download_image(stadsdeel_code, dossier_nummer, filename):
-    document_part = f'{stadsdeel_code}/{dossier_nummer}/{filename}'
+    basename, ext = os.path.splitext(filename)
+    document_part = f'{stadsdeel_code}/{str(dossier_nummer).zfill(5)}/{basename}{ext.lower()}'
+
     # print(document_part)
     document_encoded = urllib.parse.quote_plus(document_part)
     # print(document_encoded)
 
     for dim in TARGET_DIMS:
         url = f'{URL_BASE}{document_encoded}/full/{dim[0]},{dim[1]}/0/default.jpg'
+        print(url)
         target_file = os.path.join(get_image_dir(dim), filename)
 
         exists = os.path.isfile(target_file)
         if exists:
             print(f'skipping download, file exists: {filename}')
         else:
-            urllib.request.urlretrieve(url, target_file)
+            actually_download(url, target_file)
 
 
 def retrieve_dataset(csv_path):
+    print(f'retrieving: {csv_path}')
     os.makedirs(OUT_IMG_DIR, exist_ok=True)
     os.makedirs(OUT_LABEL_DIR, exist_ok=True)
 
@@ -76,12 +103,12 @@ def retrieve_dataset(csv_path):
                     print(f'skipping invalid row: {row_idx}: {row}')
                     skip_cnt += 1
                 else:
-                    type = 'aanvraag'
+                    # type = 'aanvraag'
 
-                    # if len(row) < 7:
-                    #     type = 'unknown'
-                    # else:
-                    #     type = row[6]
+                    if len(row) < 7:
+                        type = 'unknown'
+                    else:
+                        type = row[6]
 
                     filename = row[4]
 
