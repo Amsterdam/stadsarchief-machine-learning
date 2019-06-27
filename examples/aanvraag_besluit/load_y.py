@@ -11,7 +11,7 @@ def filter_Y(Ytype):
     return ['aanvraag' if x == 'aanvraag' else 'other' for x in Ytype]
 
 
-def create_Y(Ymeta, verbose=False):
+def create_Z(Ymeta, verbose=False):
     Ytype = extract_type(Ymeta)
     classes = list(set(Ytype))
 

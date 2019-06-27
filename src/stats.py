@@ -8,7 +8,7 @@ def convert_to_index(Y, types):
     return np.array([types.index(y) for y in Y])
 
 
-def list_stats(Y):
+def list_stats(Y: list):
     types = list(set(Y))
     print(f"classes: {len(types)}")
 

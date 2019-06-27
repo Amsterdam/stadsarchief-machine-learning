@@ -34,7 +34,7 @@ def load_X(img_dir, ids):
     return np.array(X)
 
 
-def load_Y_yaml(label_dir, ids):
+def load_yaml_ids(label_dir, ids):
     Y = []
     for id in ids:
         path = get_label_path(label_dir, id, '.yaml')
@@ -71,7 +71,7 @@ def load_data(img_dir, label_dir):
     print(f"first few ids: {ids[:5]}")
 
     X = load_X(img_dir, ids)
-    Y = load_Y_yaml(label_dir, ids)
+    Y = load_yaml_ids(label_dir, ids)
 
     return [X, Y, ids]
 
