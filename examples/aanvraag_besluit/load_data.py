@@ -1,3 +1,4 @@
+import logging
 from itertools import compress
 
 import numpy as np
@@ -8,6 +9,8 @@ from sklearn.utils import shuffle
 from src.data import build_ids, load_X, load_yaml_ids
 from examples.aanvraag_besluit.load_y import create_Z
 
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
 
 def getInt(value: str):
     try:
@@ -24,21 +27,28 @@ def filter_unlabeled(yaml, data_list: list):
     return data_list_filtered
 
 
-def load_raw(img_dir, label_dir):
+def load_raw(img_dir, label_dir, skip: list):
     # Build list of all ids that have both an image and associated meta data
-    ids = build_ids(img_dir, label_dir, '.yaml')
-    ids = ids[:2000]
-    print("LIMITING IDS !!!")
+    ids = build_ids(img_dir, label_dir, '.yaml', skip)
+    # ids = ids[:1399]
+    # print("LIMITING IDS !!!")
     print(f"first few ids: {ids[:5]}")
+    print(f"last few ids: {ids[-5:]}")
 
     # Remove unlabeled ids
     yaml = load_yaml_ids(label_dir, ids)
     print(f'ids count: {len(ids)}')
     ids = filter_unlabeled(yaml, ids)
-    yaml = load_yaml_ids(label_dir, ids)
     print(f'ids with label count: {len(ids)}')
+    print('loading yaml filtered')
+    yaml = load_yaml_ids(label_dir, ids)
 
+    log.info('loading images')
     X = load_X(img_dir, ids)
+    print(f'type of nparray: {X.dtype}')
+    print(f'{round(X.nbytes / 1024**2, 3)}MB')
+
+    log.info('processing meta data')
     Y = process_attributes(yaml)
     Z = create_Z(yaml, verbose=False)
     Z = Z.reshape(-1, 1)  # numpy vector (dim 1) to numpy ndarray matrix of dim 2
@@ -60,13 +70,13 @@ def process_attributes(Ymeta: list):
     return df
 
 
-def load_set(multiple_inputs):
+def load_set(multiple_inputs, skip: list):
     Img_acc = None
     Data_acc = None
     Label_acc = None
     for input_dirs in multiple_inputs:
         print('--- loading set: ', input_dirs)
-        [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'))
+        [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip)
         print(f'shape this set Img: {Img.shape}')
         if Img_acc is None:
             Img_acc = Img
@@ -81,7 +91,7 @@ def load_set(multiple_inputs):
     return [Img_acc, Data_acc, Label_acc]
 
 
-def load_data_aanvraag(inputs, inputs_train_only, random_state=42):
+def load_data_aanvraag(inputs, inputs_train_only, skip=[], random_state=42):
     """
     Load train and test set input and split into train, dev and hold out test set
     :param inputs: Represents actual problem space
@@ -89,6 +99,8 @@ def load_data_aanvraag(inputs, inputs_train_only, random_state=42):
     :param random_state:
     :return:
     """
+
+    # TODO allow skipping problematic images by id
 
     #
     #  Input dataset                     Splits
@@ -123,12 +135,12 @@ def load_data_aanvraag(inputs, inputs_train_only, random_state=42):
     #
 
     # Stage 1, load features and labels for both input sets
-    [Img_in, Data_in, Label_in] = load_set(inputs)
+    [Img_in, Data_in, Label_in] = load_set(inputs, skip)
     print('Img_in.shape', Img_in.shape)
     print('Data_in.shape', Data_in.shape)
     print('Label_in.shape', Label_in.shape)
 
-    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only)
+    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, skip)
     print('Img_in_train.shape', Img_in_train.shape)
     print('Data_in.shape', Data_in_train.shape)
     print('Label_in_train.shape', Label_in_train.shape)

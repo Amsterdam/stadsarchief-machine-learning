@@ -1,4 +1,5 @@
 import glob
+import logging
 import math
 import os
 
@@ -6,6 +7,7 @@ import numpy as np
 import yaml
 from PIL import Image
 
+log = logging.getLogger(__name__)
 
 def load_yaml(path):
     with open(path, 'r') as stream:
@@ -30,7 +32,12 @@ def load_X(img_dir, ids):
     X = []
     for id in ids:
         path = get_image_path(img_dir, id)
-        X.append(np.array(Image.open(path)))
+
+        img = np.array(Image.open(path))
+        assert img.shape == (250, 250, 3), 'Image load failure without exception'
+
+        X.append(img)
+        del img
     return np.array(X)
 
 
@@ -42,7 +49,7 @@ def load_yaml_ids(label_dir, ids):
     return Y
 
 
-def build_ids(img_dir, label_dir, label_extension):
+def build_ids(img_dir, label_dir, label_extension, skip=[]):
     ids = []
 
     file_paths = glob.glob(f"{img_dir}/*.jpg")
@@ -53,6 +60,10 @@ def build_ids(img_dir, label_dir, label_extension):
     for fname in file_paths:
         basename = os.path.basename(fname)
         id, _ = os.path.splitext(basename)
+        if id in skip:
+            print(f'id is marked as skip: {id}, skipping')
+            continue
+
         label_path = get_label_path(label_dir, id, extension=label_extension)
         if os.path.isfile(label_path):
             if os.stat(label_path).st_size == 0:
