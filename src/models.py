@@ -198,9 +198,6 @@ def build_multi_feature(num_classes, img_dim, num_features):
     model = Model(inputs=[cnn.input, mlp.input], outputs=x)
     return model
 
-#
-# OLD models
-#
 
 def create_cnn_deep_a(img_dim, num_classes=None):
     inputs = layers.Input(shape=img_dim, name="input-cnn")
@@ -231,12 +228,12 @@ def create_cnn_deep_a(img_dim, num_classes=None):
 
     x = layers.Flatten()(x)
 
-    x = layers.Dense(16, kernel_initializer = initializers.RandomUniform())(x)
+    x = layers.Dense(16, kernel_initializer=initializers.RandomUniform())(x)
     x = layers.BatchNormalization()(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
     x = layers.Dropout(drop_chance)(x)
 
-    x = layers.Dense(16, kernel_initializer = initializers.RandomUniform())(x)
+    x = layers.Dense(16, kernel_initializer=initializers.RandomUniform())(x)
     x = layers.BatchNormalization()(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
     x = layers.Dropout(drop_chance)(x)
@@ -439,13 +436,11 @@ def create_cnn_deep_c(img_dim, num_classes=None):
     x = layers.BatchNormalization()(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
 
-
     if num_classes is not None:
         x = layers.Dense(2, activation="softmax", name='output')(x)
 
     model = Model(inputs, x)
     return model
-
 
 
 def create_cnn_deep_d(img_dim, num_classes=None):
@@ -554,7 +549,6 @@ def create_cnn_deep_d(img_dim, num_classes=None):
     x = layers.Dense(512, name='fc2')(x)
     x = layers.BatchNormalization()(x)
     x = layers.LeakyReLU(alpha=lr_alpha)(x)
-
 
     if num_classes is not None:
         x = layers.Dense(2, activation="softmax", name='output')(x)

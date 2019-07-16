@@ -9,6 +9,7 @@ from PIL import Image
 
 log = logging.getLogger(__name__)
 
+
 def load_yaml(path):
     with open(path, 'r') as stream:
         try:
@@ -102,7 +103,7 @@ def split_data(X, Y, ids, split):
     N = math.floor(split * total)
     X_train = X[:N]
     Y_train = Y[:N]
-    ids_train =  ids[:N]
+    ids_train = ids[:N]
     X_test = X[N:]
     Y_test = Y[N:]
     ids_test = ids[N:]

@@ -12,6 +12,7 @@ from examples.aanvraag_besluit.load_y import create_Z
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
+
 def getInt(value: str):
     try:
         return int(value)
