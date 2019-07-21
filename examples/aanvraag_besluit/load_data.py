@@ -193,6 +193,11 @@ def load_data_aanvraag(img_dim, random_state=42):
     Data_train = np.vstack((Data_in_train, Data_train_extra))
     Label_train = np.vstack((Label_in_train, Label_train_extra))
 
+    # Shuffle everything
+    Img_train, Data_train, Label_train = shuffle(Img_train, Data_train, Label_train, random_state=random_state)
+    Img_valid, Data_valid, Label_valid = shuffle(Img_valid, Data_valid, Label_valid, random_state=random_state)
+    Img_test, Data_test, Label_test = shuffle(Img_test, Data_test, Label_test, random_state=random_state)
+
     return [
         [Img_train, Data_train, Label_train],
         [Img_valid, Data_valid, Label_valid],

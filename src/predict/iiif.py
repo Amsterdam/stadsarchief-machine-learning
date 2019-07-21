@@ -26,6 +26,6 @@ class IIIFClient:
             document_part = f'{stadsdeel_code}/{dossier_nummer}/{filename}'
             document_encoded = urllib.parse.quote_plus(document_part)
             url = f'{self.apiRoot}{document_encoded}/full/{dim[0]},{dim[1]}/0/default.jpg'
-            print(url)
+            print(f'downloading: {url} -> {target_file}')
             urllib.request.urlretrieve(url, target_file)
         return target_file
