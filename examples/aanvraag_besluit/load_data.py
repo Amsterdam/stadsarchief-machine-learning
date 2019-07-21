@@ -1,4 +1,5 @@
 import logging
+import math
 from itertools import compress
 
 import numpy as np
@@ -28,11 +29,13 @@ def filter_unlabeled(yaml, data_list: list):
     return data_list_filtered
 
 
-def load_raw(img_dir, label_dir, skip: list):
+def load_raw(img_dir, label_dir, skip: list, limit: int):
     # Build list of all ids that have both an image and associated meta data
     ids = build_ids(img_dir, label_dir, '.yaml', skip)
-    # ids = ids[:1399]
-    # print("LIMITING IDS !!!")
+
+    if not math.isinf(limit):
+        ids = ids[:limit]
+        print(f"Limiting to {limit}")
     print(f"first few ids: {ids[:5]}")
     print(f"last few ids: {ids[-5:]}")
 
@@ -71,38 +74,33 @@ def process_attributes(Ymeta: list):
     return df
 
 
-def load_set(multiple_inputs, skip: list):
+def load_set(multiple_inputs, skip: list, limit: int = math.inf):
     Img_acc = None
     Data_acc = None
     Label_acc = None
+    left = limit
     for input_dirs in multiple_inputs:
         print('--- loading set: ', input_dirs)
-        [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip)
-        print(f'shape this set Img: {Img.shape}')
+        print(f'left: {left}')
+        [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip, limit=left)
+        print(f'Img shape: {Img.shape}')
+        left = left - Img.shape[0]
         if Img_acc is None:
             Img_acc = Img
             Data_acc = Data
             Label_acc = Label
         else:
-            # Xacc[0] = np.vstack((Xacc[0], X[0]))
-            # Xacc[1] = np.vstack((Xacc[1], X[1]))
             Img_acc = np.vstack((Img_acc, Img))
             Data_acc = np.vstack((Data_acc, Data))
             Label_acc = np.vstack((Label_acc, Label))
     return [Img_acc, Data_acc, Label_acc]
 
 
-def load_data_aanvraag(inputs, inputs_train_only, skip=[], random_state=42):
+def load_data_aanvraag(img_dim, random_state=42):
     """
     Load train and test set input and split into train, dev and hold out test set
-    :param inputs: Represents actual problem space
-    :param inputs_train_only: May be larger than problem space (contain synthetic images or tangentially related)
-    :param random_state:
     :return:
     """
-
-    # TODO allow skipping problematic images by id
-
     #
     #  Input dataset                     Splits
     #
@@ -135,29 +133,61 @@ def load_data_aanvraag(inputs, inputs_train_only, skip=[], random_state=42):
     # +-----------+                    +-------------+
     #
 
+    # Represents actual problem space
+    inputs = [
+        {
+            'images': f'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/labels/'
+        },
+        {
+            'images': f'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/labels/'
+        }
+    ]
+
+    # May be larger than problem space (contain synthetic images or tangentially related)
+    inputs_train_only = [
+        {
+            'images': f'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/labels/'
+        }
+    ]
+
+    idsSkip = [
+        # Images are not loaded properly
+        'ST00122908_00001',
+        'ST00058502_00001'
+    ]
+    skip = idsSkip
+
+    #
     # Stage 1, load features and labels for both input sets
+    #
     [Img_in, Data_in, Label_in] = load_set(inputs, skip)
     print('Img_in.shape', Img_in.shape)
     print('Data_in.shape', Data_in.shape)
     print('Label_in.shape', Label_in.shape)
+    print()
 
-    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, skip)
+    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, skip, limit=100)
     print('Img_in_train.shape', Img_in_train.shape)
-    print('Data_in.shape', Data_in_train.shape)
+    print('Data_in_train.shape', Data_in_train.shape)
     print('Label_in_train.shape', Label_in_train.shape)
+    print('Img_in_train.shape', Img_in_train.shape)
+    print()
 
+    #
     # Stage 2, redistribute data to form Train, validation and test sets
-
+    #
     # Train = inputs_train + some examples from inputs set
     # Validation = subset of inputs set
     # (hold out) Test = subset of inputs set
     count = Img_in.shape[0]
-    splits = [int(.33 * count), int(.66*count)]
+    splits = [int(.33 * count), int(.66 * count)]
     print('splits', splits)
     [Img_train_extra, Img_valid, Img_test] = np.vsplit(Img_in, splits)
     [Data_train_extra, Data_valid, Data_test] = np.vsplit(Data_in, splits)
     [Label_train_extra, Label_valid, Label_test] = np.vsplit(Label_in, splits)
-    print('Img_train_extra.shape', Img_train_extra.shape)
 
     Img_train = np.vstack((Img_in_train, Img_train_extra))
     Data_train = np.vstack((Data_in_train, Data_train_extra))
