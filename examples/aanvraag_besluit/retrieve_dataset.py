@@ -11,11 +11,17 @@ import os
 URL_BASE = os.environ.get('URL_BASE')
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-DATASET_DIR = os.path.join(SCRIPT_DIR, 'tweede_dataset')
-INPUT_CSV = os.path.join(DATASET_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK-annotated.csv')
-# DATASET_DIR = os.path.join(SCRIPT_DIR, 'derde_dataset')
-# INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZuidOost_aanvragen_20190616.csv')  # Don't forget to also force type
-# INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZuidOost_niet_aanvragen_20190616.csv')
+
+# DATASET_DIR = os.path.join(SCRIPT_DIR, 'tweede_dataset')
+# INPUT_CSV = os.path.join(DATASET_DIR, 'src/alle_aanvragen_en_besluiten_na_1980_HK-annotated.csv')
+
+DATASET_DIR = os.path.join(SCRIPT_DIR, 'dataset_3_ZO_AnB_aanvragen')
+INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZuidOost_aanvragen_20190616.csv')  # Don't forget to also force type
+# DATASET_DIR = os.path.join(SCRIPT_DIR, 'dataset_3_ZO_AnB_other')
+# INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZO_eerste_paginas_AenB_openbaarr_en_openbaar_dossier_20190716.csv')  # Don't forget to also force type
+
+# DATASET_DIR = os.path.join(SCRIPT_DIR, 'dataset_4_ZO_other_production')
+# INPUT_CSV = os.path.join(DATASET_DIR, 'src/ZO_eerste_paginas_niet_AenB_openbaar_en_openbaar_dossier.csv')
 
 OUT_LABEL_DIR = os.path.join(DATASET_DIR, 'labels/')
 OUT_IMG_DIR = os.path.join(DATASET_DIR, 'images/')
