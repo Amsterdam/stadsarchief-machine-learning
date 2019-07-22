@@ -1,6 +1,6 @@
-import json
 import logging
 import os
+import pandas
 import sys
 import time
 from urllib.error import HTTPError
@@ -19,10 +19,16 @@ root.addHandler(handler)
 
 log = logging.getLogger(__name__)
 
+PROGRESS_LOG_MODULO = 100
+
 assert os.getenv('BOUWDOSSIERS_OBJECTSTORE_PASSWORD')
 
 assert len(sys.argv) == 2
-input_json = sys.argv[1]
+input_csv = sys.argv[1]
+
+
+def open_csv(input_path):
+    return pandas.read_csv(input_path)
 
 
 def write_csv(data, target_file):
@@ -32,56 +38,67 @@ def write_csv(data, target_file):
     return target_file
 
 
-def perform_prediction(input_json):
-    filename = os.path.basename(input_json)
+def perform_prediction(input_csv, do_upload):
+    filename = os.path.basename(input_csv)
     basename, _ = os.path.splitext(filename)
     csv_file_name = f'{basename}_results.csv'
     csv_file_path = os.path.join(OUTPUT_DIR, csv_file_name)
 
-    with open(input_json) as f:
-        data = json.load(f)
-
-    dataset = data.get('data')
+    data_frame = pandas.read_csv(input_csv)
 
     results = []
 
-    t0 = time.time()
-    for element in dataset:
+    t1 = time.time()
+    t2 = time.time()
+    for index, row in data_frame.iterrows():
         prediction = None
         confidence = None
 
+        stadsdeel_code = row.get('stadsdeel_code')
+        dossier_nummer = str(row.get('dossier_nummer')).zfill(5)
+        filename = row.get('file_naam')
+
+        result = {
+            'stadsdeel_code': stadsdeel_code,
+            'dossier_nummer': dossier_nummer,
+            'filename': filename,
+            'notes': ''
+        }
+
         try:
-            prediction, confidence, url = predict_single(element)
+            prediction, confidence, url = predict_single(stadsdeel_code, dossier_nummer, filename)
         except HTTPError as e:
             if e.code == 404:
                 message = f'Image not found: {e.url}'
                 log.debug(message)
-                results.append({
-                    **element,
-                    'url': e.url,
-                    'notes': message
-                })
-                continue
+                result['url'] = e.url
+                result['notes'] = message
+        result['prediction'] = prediction
+        result['confidence'] = confidence
+        result['url'] = url
 
-        results.append({
-            **element,
-            'prediction': prediction,
-            'confidence': confidence,
-            'url': url
-        })
-    difference = time.time() - t0
+        results.append(result)
+
+        if index % PROGRESS_LOG_MODULO == 0:
+            difference = time.time() - t2
+            t2 = time.time()
+            log.info(f'row index: {index}, {round(1000 / difference * PROGRESS_LOG_MODULO, 3)} rows per second')
+
+    difference = time.time() - t1
     log.info(f'image retrieval & model prediction time: {round(difference, 3)}ms')
 
     write_csv(results, csv_file_path)
-    target_file = f'automation/prediction/{csv_file_name}'
-    upload_file(csv_file_path, target_file)
+
+    if do_upload:
+        target_file = f'automation/prediction/{csv_file_name}'
+        upload_file(csv_file_path, target_file)
 
     return results
 
 
 t0 = time.time()
 
-perform_prediction(input_json)
+perform_prediction(input_csv, do_upload=False)
 
 global_diff = time.time() - t0
 log.info(f'total script time: {round(global_diff, 3)}s')

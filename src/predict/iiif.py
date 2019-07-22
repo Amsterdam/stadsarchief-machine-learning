@@ -18,15 +18,14 @@ class IIIFClient:
         os.makedirs(dir, exist_ok=True)
         return dir
 
-    def get_image(self, stadsdeel_code, dossier_nummer, document_id, dim) -> str:
+    def get_image(self, stadsdeel_code, dossier_nummer, filename, dim) -> str:
         assert len(dim) == 2, 'dimension (dim) should be of the form [width, height]'
-
-        filename = f'{document_id}.jpg'
 
         target_dir = self.get_image_dir(dim)
         target_file = os.path.join(target_dir, filename)
 
         document_part = f'{stadsdeel_code}/{dossier_nummer}/{filename}'
+
         document_encoded = urllib.parse.quote_plus(document_part)
         url = f'{self.apiRoot}{document_encoded}/full/{dim[0]},{dim[1]}/0/default.jpg'
         if os.path.isfile(target_file):

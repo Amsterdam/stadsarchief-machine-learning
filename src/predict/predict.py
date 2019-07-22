@@ -30,14 +30,11 @@ model.load_weights(MODEL_WEIGHTS)
 print("Loaded model from disk")
 
 
-def predict_single(element):
+def predict_single(stadsdeel_code, dossier_nummer, filename):
     # Get data
     dim = [250, 250]
-    stadsdeel_code = element.get('stadsdeel_code')
-    dossier_nummer = element.get('dossier_nummer')
-    document_id = element.get('document_id')
 
-    [path, url] = iiifClient.get_image(stadsdeel_code, dossier_nummer, document_id, dim)
+    [path, url] = iiifClient.get_image(stadsdeel_code, dossier_nummer, filename, dim)
 
     image_data = np.array(Image.open(path))
     images_data = np.expand_dims(image_data, axis=0)  # set of examples of size 1
