@@ -30,6 +30,20 @@ def get_objectstore_connection():
     return connection
 
 
+def upload_file(source_file: str, target_file: str):
+    connection = get_objectstore_connection()
+
+    [container, filename] = os.path.split(target_file)
+    with open(source_file, 'rb') as local_file:
+        connection.put_object(
+            container,
+            filename,
+            contents=local_file,
+            content_type='text/csv'
+        )
+
+
+
 def get_all_files(container_name: str, target_dir: str):
     connection = get_objectstore_connection()
     os.makedirs(target_dir, exist_ok=True)

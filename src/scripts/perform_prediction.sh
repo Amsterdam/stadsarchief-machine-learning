@@ -12,5 +12,5 @@ fi
 python ./run_mirror_objectstore.py tmp/objectstore
 
 export MODEL_DIR=tmp/objectstore/automation/models/$1
-JSON_INPUT=tmp/objectstore/automation/input/$2
+JSON_INPUT=tmp/objectstore/automation/prediction/$2
 python ./run_prediction.py $JSON_INPUT
