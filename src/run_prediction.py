@@ -82,10 +82,10 @@ def perform_prediction(input_csv, do_upload):
         if index % PROGRESS_LOG_MODULO == 0:
             difference = time.time() - t2
             t2 = time.time()
-            log.info(f'row index: {index}, {round(1000 / difference * PROGRESS_LOG_MODULO, 3)} rows per second')
+            log.info(f'row index: {index}, {round(difference, 3)}s, {round(PROGRESS_LOG_MODULO / difference, 3)} rows per second')
 
     difference = time.time() - t1
-    log.info(f'image retrieval & model prediction time: {round(difference, 3)}ms')
+    log.info(f'image retrieval & model prediction time: {round(difference, 3)}s')
 
     write_csv(results, csv_file_path)
 
