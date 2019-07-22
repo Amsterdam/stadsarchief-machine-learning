@@ -35,13 +35,14 @@ def upload_file(source_file: str, target_file: str):
 
     [container, filename] = os.path.split(target_file)
     with open(source_file, 'rb') as local_file:
+        log.info(f'uploading to {target_file}')
         connection.put_object(
             container,
             filename,
             contents=local_file,
             content_type='text/csv'
         )
-
+    log.info(f'File uploaded')
 
 
 def get_all_files(container_name: str, target_dir: str):
