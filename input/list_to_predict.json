@@ -1,5 +1,6 @@
 {
   "data": [
-    { "stadsdeel_code": "SU", "dossier_nummer": "13557", "document_id": "SU10110241_00001" }
+    { "stadsdeel_code": "SU", "dossier_nummer": "13557", "document_id": "SU10110241_00001" },
+    { "stadsdeel_code": "SU", "dossier_nummer": "13557", "document_id": "someid" }
   ]
 }

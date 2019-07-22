@@ -1,4 +1,5 @@
 import logging
+from urllib.error import HTTPError
 
 import numpy as np
 from PIL import Image
@@ -35,7 +36,8 @@ def predict_single(element):
     stadsdeel_code = element.get('stadsdeel_code')
     dossier_nummer = element.get('dossier_nummer')
     document_id = element.get('document_id')
-    path = iiifClient.get_image(stadsdeel_code, dossier_nummer, document_id, dim)
+
+    [path, url] = iiifClient.get_image(stadsdeel_code, dossier_nummer, document_id, dim)
 
     image_data = np.array(Image.open(path))
     images_data = np.expand_dims(image_data, axis=0)  # set of examples of size 1
@@ -49,6 +51,6 @@ def predict_single(element):
     category = targetEncoder.inverse_transform(result)[0][0]
     confidence = np.max(result)
 
-    return [category, confidence]
+    return [category, confidence, url]
 
 

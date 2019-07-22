@@ -1,5 +1,9 @@
+import logging
 import os
 import urllib
+
+
+log = logging.getLogger(__name__)
 
 
 class IIIFClient:
@@ -10,7 +14,9 @@ class IIIFClient:
         os.makedirs(imageDir, exist_ok=True)
 
     def get_image_dir(self, dim):
-        return os.path.join(self.imageDir, f'{dim[0]}x{dim[1]}/')
+        dir = os.path.join(self.imageDir, f'{dim[0]}x{dim[1]}/')
+        os.makedirs(dir, exist_ok=True)
+        return dir
 
     def get_image(self, stadsdeel_code, dossier_nummer, document_id, dim) -> str:
         assert len(dim) == 2, 'dimension (dim) should be of the form [width, height]'
@@ -20,12 +26,12 @@ class IIIFClient:
         target_dir = self.get_image_dir(dim)
         target_file = os.path.join(target_dir, filename)
 
+        document_part = f'{stadsdeel_code}/{dossier_nummer}/{filename}'
+        document_encoded = urllib.parse.quote_plus(document_part)
+        url = f'{self.apiRoot}{document_encoded}/full/{dim[0]},{dim[1]}/0/default.jpg'
         if os.path.isfile(target_file):
-            print(f'skipping download, file exists: {filename}')
+            log.info(f'skipping download, file exists: {filename}')
         else:
-            document_part = f'{stadsdeel_code}/{dossier_nummer}/{filename}'
-            document_encoded = urllib.parse.quote_plus(document_part)
-            url = f'{self.apiRoot}{document_encoded}/full/{dim[0]},{dim[1]}/0/default.jpg'
-            print(f'downloading: {url} -> {target_file}')
+            log.info(f'downloading: {url} -> {target_file}')
             urllib.request.urlretrieve(url, target_file)
-        return target_file
+        return [target_file, url]
