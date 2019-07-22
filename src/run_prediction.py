@@ -24,7 +24,9 @@ input_json = sys.argv[1]
 
 def write_csv(data):
     df = pd.DataFrame(data)
-    df.to_csv(os.path.join(OUTPUT_DIR, 'results.csv'))
+    target_file = os.path.join(OUTPUT_DIR, 'results.csv')
+    df.to_csv(target_file)
+    log.info(f'results written to {target_file}')
 
 
 def perform_prediction(input_json):
