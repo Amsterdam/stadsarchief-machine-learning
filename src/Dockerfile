@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN adduser --system datapunt
 RUN mkdir -p /app && chown datapunt /app
 RUN mkdir -p /output && chown datapunt /output
+RUN mkdir -p /cache && chown datapunt /cache
 USER datapunt
 
 COPY . /app/
