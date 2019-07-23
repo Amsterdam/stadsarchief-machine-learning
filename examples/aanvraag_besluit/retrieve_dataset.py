@@ -88,7 +88,7 @@ def download_image(stadsdeel_code, dossier_nummer, filename):
             actually_download(url, target_file)
 
 
-def retrieve_dataset(csv_path):
+def retrieve_dataset(csv_path, update_label=False):
     print(f'retrieving: {csv_path}')
     os.makedirs(OUT_IMG_DIR, exist_ok=True)
     os.makedirs(OUT_LABEL_DIR, exist_ok=True)
@@ -132,14 +132,15 @@ def retrieve_dataset(csv_path):
                     except HTTPError as e:
                         print(f'Download failed row: {row_idx}: {row}, {e}')
                         skip_cnt += 1
-                    write_label(id, {
-                        'reference': filename,
-                        'type': type,
-                        'stadsdeel_code': stadsdeel_code,
-                        'dossier_nummer': dossier_nummer,
-                        'dossier_type': row[2],
-                        'dossier_jaar': row[3],
-                    })
+                    if update_label:
+                        write_label(id, {
+                            'reference': filename,
+                            'type': type,
+                            'stadsdeel_code': stadsdeel_code,
+                            'dossier_nummer': dossier_nummer,
+                            'dossier_type': row[2],
+                            'dossier_jaar': row[3],
+                        })
 
             row_idx += 1
             if row_idx >= MAX_CNT:

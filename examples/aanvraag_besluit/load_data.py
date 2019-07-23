@@ -33,7 +33,7 @@ def load_raw(img_dir, label_dir, skip: list, limit: int):
     # Build list of all ids that have both an image and associated meta data
     ids = build_ids(img_dir, label_dir, '.yaml', skip)
 
-    if not math.isinf(limit):
+    if limit:
         ids = ids[:limit]
         print(f"Limiting to {limit}")
     print(f"first few ids: {ids[:5]}")
@@ -74,17 +74,16 @@ def process_attributes(Ymeta: list):
     return df
 
 
-def load_set(multiple_inputs, skip: list, limit: int = math.inf):
+def load_set(multiple_inputs, skip: list):
     Img_acc = None
     Data_acc = None
     Label_acc = None
-    left = limit
     for input_dirs in multiple_inputs:
         print('--- loading set: ', input_dirs)
-        print(f'left: {left}')
-        [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip, limit=left)
+        limit = input_dirs.get('limit')
+        print(limit)
+        [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip, limit=limit)
         print(f'Img shape: {Img.shape}')
-        left = left - Img.shape[0]
         if Img_acc is None:
             Img_acc = Img
             Data_acc = Data
@@ -149,8 +148,19 @@ def load_data_aanvraag(img_dim, random_state=42):
     inputs_train_only = [
         {
             'images': f'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/labels/'
-        }
+            'labels': 'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/labels/',
+            'limit': 416
+        },
+        {
+            'images': f'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/labels/',
+            'limit': 622
+        },
+        {
+            'images': f'examples/aanvraag_besluit/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_4_ZO_other_production/labels/',
+            'limit': 176
+        },
     ]
 
     idsSkip = [
@@ -169,7 +179,7 @@ def load_data_aanvraag(img_dim, random_state=42):
     print('Label_in.shape', Label_in.shape)
     print()
 
-    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, skip, limit=100)
+    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, skip)
     print('Img_in_train.shape', Img_in_train.shape)
     print('Data_in_train.shape', Data_in_train.shape)
     print('Label_in_train.shape', Label_in_train.shape)
