@@ -30,12 +30,7 @@ model.load_weights(MODEL_WEIGHTS)
 print("Loaded model from disk")
 
 
-def predict_single(stadsdeel_code, dossier_nummer, filename):
-    # Get data
-    dim = [250, 250]
-
-    [path, url] = iiifClient.get_image(stadsdeel_code, dossier_nummer, filename, dim)
-
+def predict_single(path):
     image_data = np.array(Image.open(path))
     images_data = np.expand_dims(image_data, axis=0)  # set of examples of size 1
 
@@ -48,6 +43,6 @@ def predict_single(stadsdeel_code, dossier_nummer, filename):
     category = targetEncoder.inverse_transform(result)[0][0]
     confidence = np.max(result)
 
-    return [category, confidence, url]
+    return [category, confidence]
 
 
