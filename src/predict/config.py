@@ -7,6 +7,8 @@ IIIF_CACHE_DIR = os.getenv("IIIF_CACHE_DIR")
 assert IIIF_CACHE_DIR is not None
 os.makedirs(IIIF_CACHE_DIR, exist_ok=True)
 
+IIIF_TIMEOUT = 20  # seconds
+
 OUTPUT_DIR = os.getenv("OUTPUT_DIR")
 assert OUTPUT_DIR is not None
 os.makedirs(OUTPUT_DIR, exist_ok=True)
