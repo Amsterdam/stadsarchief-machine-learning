@@ -14,7 +14,7 @@ from predict.config import OUTPUT_DIR
 from predict.iiif import HttpError404
 from predict.predict import predict_single, iiifClient
 
-log_level = logging.INFO
+log_level = logging.DEBUG
 root = logging.getLogger()
 root.setLevel(log_level)
 handler = logging.StreamHandler(sys.stdout)
