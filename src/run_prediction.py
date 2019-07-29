@@ -170,8 +170,8 @@ async def perform_prediction(input_csv: str):
     loop = asyncio.get_event_loop()
     loop.set_exception_handler(handle_exception)
 
-    queue1 = asyncio.Queue()
-    queue2 = asyncio.Queue()
+    queue1 = asyncio.Queue(maxsize=500)
+    queue2 = asyncio.Queue(maxsize=100)
 
     log.info(f'number of image fetchers: {N_IMAGE_FETCHERS}')
     producer = loop.create_task(csv_reader(queue1, input_csv))
