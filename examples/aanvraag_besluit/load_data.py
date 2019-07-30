@@ -71,7 +71,7 @@ def process_attributes(Ymeta: list):
         #     row_data[column] = y.get(column, None)
         data.append(row_data)
     df = pd.DataFrame(data)
-    return df
+    return df.values  # We return it as a numpy array so to avoid trouble in a later stage
 
 
 def load_set(multiple_inputs, skip: list):
@@ -135,31 +135,16 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Represents actual problem space
     inputs = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/labels/',
-            'limit': 622
-        },
-        {
-            'images': f'examples/aanvraag_besluit/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_4_ZO_other_production/labels/',
-            'limit': 176
-        },
+            'images': f'examples/aanvraag_besluit/dataset_0/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_0/labels/'
+        }
     ]
 
     # May be larger than problem space (contain synthetic images or tangentially related)
     inputs_train_only = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/labels/',
-            'limit': 416
-        },
-        {
-            'images': f'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/labels/'
-        },
-        {
-            'images': f'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/labels/'
+            'images': f'examples/aanvraag_besluit/dataset_0b/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_0b/labels/'
         }
     ]
 
