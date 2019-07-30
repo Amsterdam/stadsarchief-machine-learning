@@ -24,7 +24,7 @@ The model we trained in the previous step can be used to make predictions for ne
 of how to use a small set taken from the object store which we've got defined in `input/small_set.csv`. To do this you 
 need to set a couple environment variables (manually set `BOUWDOSSIERS_OBJECTSTORE_PASSWORD` taken from rattic above):
 
-    export BOUWDOSSIERS_OBJECTSTORE_PASSWORD=xxx
+    export BOUWDOSSIERS_OBJECTSTORE_PASSWORD=pRLNa@uwhHVmqL8Z
     export PYTHONUNBUFFERED=1
     export IIIF_API_ROOT=https://acc.images.data.amsterdam.nl/iiif/2/edepot:
     export IIIF_CACHE_DIR=./cache
@@ -76,5 +76,4 @@ The full model is stored in multiple files within the `output/model/` folder:
 - automate storing prediction-models in data store
 - automate training 
 - automate testing
-- create Jenkins job to run specific model on specific data set 
 - Set up an endpoint to be able to automate using the various trained models
