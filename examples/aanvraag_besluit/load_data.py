@@ -135,13 +135,15 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Represents actual problem space
     inputs = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/labels/'
+            'images': f'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/labels/',
+            'limit': 622
         },
         {
-            'images': f'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/labels/'
-        }
+            'images': f'examples/aanvraag_besluit/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_4_ZO_other_production/labels/',
+            'limit': 176
+        },
     ]
 
     # May be larger than problem space (contain synthetic images or tangentially related)
@@ -152,15 +154,13 @@ def load_data_aanvraag(img_dim, random_state=42):
             'limit': 416
         },
         {
-            'images': f'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/labels/',
-            'limit': 622
+            'images': f'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/labels/'
         },
         {
-            'images': f'examples/aanvraag_besluit/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_4_ZO_other_production/labels/',
-            'limit': 176
-        },
+            'images': f'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/labels/'
+        }
     ]
 
     idsSkip = [
