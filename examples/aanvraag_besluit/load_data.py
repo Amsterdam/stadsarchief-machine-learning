@@ -135,36 +135,50 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Represents actual problem space
     inputs = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_0/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_0/labels/'
-        }
+            'images': f'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/labels/',
+            'limit': 622
+        },
+        {
+            'images': f'examples/aanvraag_besluit/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_4_ZO_other_production/labels/',
+            'limit': 176
+        },
     ]
 
     # May be larger than problem space (contain synthetic images or tangentially related)
     inputs_train_only = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_0b/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_0b/labels/'
+            'images': f'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/labels/',
+            'limit': 416
+        },
+        {
+            'images': f'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/labels/'
+        },
+        {
+            'images': f'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/labels/'
         }
     ]
 
-    idsSkip = [
+    ids_to_skip = [
         # Images are not loaded properly
         'ST00122908_00001',
         'ST00058502_00001'
     ]
-    skip = idsSkip
 
     #
     # Stage 1, load features and labels for both input sets
     #
-    [Img_in, Data_in, Label_in] = load_set(inputs, skip)
+    [Img_in, Data_in, Label_in] = load_set(inputs, ids_to_skip)
     print('Img_in.shape', Img_in.shape)
     print('Data_in.shape', Data_in.shape)
     print('Label_in.shape', Label_in.shape)
     print()
 
-    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, skip)
+    [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, ids_to_skip)
     print('Img_in_train.shape', Img_in_train.shape)
     print('Data_in_train.shape', Data_in_train.shape)
     print('Label_in_train.shape', Label_in_train.shape)
@@ -187,6 +201,53 @@ def load_data_aanvraag(img_dim, random_state=42):
     Img_train = np.vstack((Img_in_train, Img_train_extra))
     Data_train = np.vstack((Data_in_train, Data_train_extra))
     Label_train = np.vstack((Label_in_train, Label_train_extra))
+
+    # Shuffle everything
+    Img_train, Data_train, Label_train = shuffle(Img_train, Data_train, Label_train, random_state=random_state)
+    Img_valid, Data_valid, Label_valid = shuffle(Img_valid, Data_valid, Label_valid, random_state=random_state)
+    Img_test, Data_test, Label_test = shuffle(Img_test, Data_test, Label_test, random_state=random_state)
+
+    return [
+        [Img_train, Data_train, Label_train],
+        [Img_valid, Data_valid, Label_valid],
+        [Img_test, Data_test, Label_test],
+    ]
+
+
+def load_getting_started_data(img_dim, random_state=42):
+    """
+    Load train, dev and hold out test set for getting started dataset
+    :return:
+    """
+
+    # Represents actual problem space
+    inputs = [
+        {
+            'images': f'examples/aanvraag_besluit/dataset_0/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'examples/aanvraag_besluit/dataset_0/labels/'
+        }
+    ]
+    ids_to_skip = []
+    splits = [.6, .8]  # Train 60%, Dev/validation 20% and 20% test set
+
+    #
+    # Stage 1, load features and labels for input set
+    #
+    [Img_in, Data_in, Label_in] = load_set(inputs, ids_to_skip)
+    print('Img_in.shape', Img_in.shape)
+    print('Data_in.shape', Data_in.shape)
+    print('Label_in.shape', Label_in.shape)
+    print()
+
+    #
+    # Stage 2, redistribute data to form Train, validation and test sets
+    #
+    count = Img_in.shape[0]
+    splits_indices = [int(splits[0] * count), int(splits[1] * count)]
+    print('splits', splits)
+    [Img_train, Img_valid, Img_test] = np.vsplit(Img_in, splits_indices)
+    [Data_train, Data_valid, Data_test] = np.vsplit(Data_in, splits_indices)
+    [Label_train, Label_valid, Label_test] = np.vsplit(Label_in, splits_indices)
 
     # Shuffle everything
     Img_train, Data_train, Label_train = shuffle(Img_train, Data_train, Label_train, random_state=random_state)
