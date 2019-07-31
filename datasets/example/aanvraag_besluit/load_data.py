@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
 from src.data import build_ids, load_X, load_yaml_ids
-from examples.aanvraag_besluit.load_y import create_Z
+from ..aanvraag_besluit.load_y import create_Z
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -135,16 +135,16 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Represents actual problem space
     inputs = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_0/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_0/labels/'
+            'images': f'datasets/example/aanvraag_besluit/dataset_0/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/example/aanvraag_besluit/dataset_0/labels/'
         }
     ]
 
     # May be larger than problem space (contain synthetic images or tangentially related)
     inputs_train_only = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_0b/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_0b/labels/'
+            'images': f'datasets/example/aanvraag_besluit/dataset_0b/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/example/aanvraag_besluit/dataset_0b/labels/'
         }
     ]
 
