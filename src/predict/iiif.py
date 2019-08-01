@@ -9,13 +9,13 @@ from predict.config import IIIF_TIMEOUT
 log = logging.getLogger(__name__)
 
 
-class HttpError404(HttpError):
+class HttpErrorCode(HttpError):
     """
-    Extension of httpx error so a 404 error can be distinguished from other status code exceptions
+    Extension of httpx error so 4xx and 5xx errors can be distinguished from other status code exceptions
     """
-
-    def __init__(self, message, url):
-        super(HttpError404, self).__init__(message)
+    def __init__(self, message, code, url):
+        super(HttpErrorCode, self).__init__(message)
+        self.code = code
         self.url = url
 
 
@@ -34,12 +34,13 @@ class IIIFClient:
 
     async def download_image(self, url, target_file):
         r = await self.httpxClient.get(url, timeout=IIIF_TIMEOUT)
-        if r.status_code == 404:
-            # Raise 404 exception but use httpx raise_for_status to get error message
+        if 400 <= r.status_code < 600:
+            # Raise 4xx or 5xx exception, e.g.: 404 exception.
+            # Using httpx raise_for_status to get error message
             try:
                 r.raise_for_status()
             except Exception as e:
-                raise HttpError404(str(e), url)
+                raise HttpErrorCode(str(e), r.status_code, url)
         if r.status_code != 200 or len(r.content) == 0:
             r.raise_for_status()  # raise exception
         open(target_file, 'wb').write(r.content)

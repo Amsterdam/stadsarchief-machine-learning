@@ -12,7 +12,7 @@ import pandas as pd
 
 from objectstore_lib import upload_file
 from predict.config import OUTPUT_DIR
-from predict.iiif import HttpError404
+from predict.iiif import HttpErrorCode
 from predict.predict import predict_single, iiifClient
 
 log_level = logging.INFO
@@ -114,9 +114,12 @@ async def image_fetcher(queue_in, queue_out):
             t3 = time.time()
             try:
                 [path, url] = await iiifClient.get_image(stadsdeel_code, dossier_nummer, filename, DIMENSION)
-            except HttpError404 as e:
+            except HttpErrorCode as e:
                 url = e.url
-                message = f'Image not found: {url}'
+                if e.code == 404:
+                    message = f'Image not found: {url}'
+                else:
+                    message = f'Image could not be opened, status code {e.code}: {url}'
                 log.warning(message)
                 result['url'] = e.url
                 result['notes'] = message
