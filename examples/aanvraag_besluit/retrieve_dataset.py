@@ -28,11 +28,13 @@ OUT_IMG_DIR = os.path.join(DATASET_DIR, 'images/')
 
 TARGET_DIMS = [
     (250, 250,),
-    (400, 400,),
+    # (400, 400,),
     (800, 800,),
     # (1200, 1200,),
 ]
 
+update_label = False  # Write label file
+OVERWRITE_LABEL = False  # Overwrite existing label files
 MAX_CNT = 99999
 
 
@@ -42,8 +44,13 @@ MAX_CNT = 99999
 
 def write_label(id, data):
     filename = f"{OUT_LABEL_DIR}/{id}.yaml"
-    with open(filename, 'w') as outfile:
-        yaml.dump(data, outfile, default_flow_style=False)
+
+    exists = os.path.isfile(filename)
+    print(f'{filename}, {exists}')
+    if OVERWRITE_LABEL or not exists:
+        print('wrinting')
+        with open(filename, 'w') as outfile:
+            yaml.dump(data, outfile, default_flow_style=False)
 
 
 def get_image_dir(dim):
@@ -151,4 +158,4 @@ def retrieve_dataset(csv_path, update_label=False):
         print(f'row count, {row_idx}')
 
 
-retrieve_dataset(INPUT_CSV)
+retrieve_dataset(INPUT_CSV, update_label=update_label)
