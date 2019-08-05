@@ -17,7 +17,7 @@ def list_stats(Y: list):
     unique_counts = list(zip(unique, counts))
     #     print(unique_counts)
 
-    min_cnt = 5
+    min_cnt = 0
     print(f"classes with count less than {min_cnt} ignored")
     top = [[types[idx], count] for idx, count in unique_counts if count > min_cnt]
     print(f"count classes: {top}")

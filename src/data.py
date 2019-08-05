@@ -58,7 +58,9 @@ def build_ids(img_dir, label_dir, label_extension, skip=[]):
     if len(file_paths) == 0:
         print(f'no images found, {img_dir} exists?')
 
-    for fname in file_paths:
+    file_paths_sorted = sorted(file_paths)
+
+    for fname in file_paths_sorted:
         basename = os.path.basename(fname)
         id, _ = os.path.splitext(basename)
         if id in skip:

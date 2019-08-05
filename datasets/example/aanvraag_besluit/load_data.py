@@ -83,6 +83,7 @@ def load_set(multiple_inputs, skip: list):
         limit = input_dirs.get('limit')
         print("Limit:", limit)
         [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip, limit=limit)
+        print(f'unique counts: {np.unique(Label, return_counts=True)}')
         print(f'Img shape: {Img.shape}')
         if Img_acc is None:
             Img_acc = Img
@@ -137,12 +138,12 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/labels/',
-            'limit': 622
+            'limit': 2364
         },
         {
             'images': f'examples/aanvraag_besluit/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'examples/aanvraag_besluit/dataset_4_ZO_other_production/labels/',
-            'limit': 176
+            'limit': 332
         },
     ]
 
@@ -151,7 +152,7 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/labels/',
-            'limit': 416
+            'limit': 700
         },
         {
             'images': f'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
@@ -192,7 +193,7 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Validation = subset of inputs set
     # (hold out) Test = subset of inputs set
     count = Img_in.shape[0]
-    splits = [int(.33 * count), int(.66 * count)]
+    splits = [int(.55 * count), int(.99 * count)]
     print('splits', splits)
     [Img_train_extra, Img_valid, Img_test] = np.vsplit(Img_in, splits)
     [Data_train_extra, Data_valid, Data_test] = np.vsplit(Data_in, splits)
