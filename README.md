@@ -1,6 +1,6 @@
-# Machine Learning the stadsarchief
+# Machine Learning Stadsarchief
 This is a start to use machine learning for the interpretation of a variety of data sources within the gemeente. The 
-current state is work in progress for the specific aim to classify bouwdossiers from the stadsarchief.
+current state is work in progress for the specific aim to classify bouwdossiers from the Stadsarchief.
 
 
 ## Quickstart
@@ -16,13 +16,13 @@ Then open the notebook `src/notebook/AanvraagClassifier.ipynb` in the browser.
 
 After running all the code in the notebook, a model is written to `output/model/`. The added training set is very small 
 and doesn't give you a very good model. To do serious training you can use more data from the object store 
-`9d078258c1a547c09e0b5f88834554f1:bouwdossiers` (credentials are under the name `cloudVPS Bouwdossiers` in rattic). 
+`9d078258c1a547c09e0b5f88834554f1:bouwdossiers` (credentials are under the name `cloudVPS Bouwdossiers` in Rattic). 
 Download a training set there and put it into `examples/aanvraag_besluit/`.
 
 ### 2. Make new predictions
 The model we trained in the previous step can be used to make predictions for new records/images. Below is an example 
 of how to use a small set taken from the object store which we've got defined in `input/small_set.csv`. To do this you 
-need to set a couple environment variables (manually set `BOUWDOSSIERS_OBJECTSTORE_PASSWORD` taken from rattic above):
+need to set a couple environment variables (manually set `BOUWDOSSIERS_OBJECTSTORE_PASSWORD` taken from Rattic above):
 
     export BOUWDOSSIERS_OBJECTSTORE_PASSWORD=pRLNa@uwhHVmqL8Z
     export PYTHONUNBUFFERED=1
@@ -68,7 +68,7 @@ Note that:
 The full model is stored in multiple files within the `output/model/` folder:
 * model/model.json, Keras model architecture
 * model/weights.h5, Keras model weights
-* model/transform/image_encoder.npy, image preprocessing encoder configuration
+* model/transform/image_encoder.npy, image pre processing encoder configuration
 * model/transform/target_encoder.npy, label encoder configuration 
 
 

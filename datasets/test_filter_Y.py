@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from examples.aanvraag_besluit.load_y import filter_Y
+from .load_y import filter_Y
 
 
 class TestFilter_Y(TestCase):

@@ -3,7 +3,7 @@ from unittest import TestCase
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from examples.aanvraag_besluit.load_data import filter_empty_label
+from .load_data import filter_empty_label
 
 
 class TestFilter_empty_label(TestCase):

@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
 from src.data import build_ids, load_X, load_yaml_ids
-from ..aanvraag_besluit.load_y import create_Z
+from .load_y import create_Z
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -136,13 +136,13 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Represents actual problem space
     inputs = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_3b_ZO_AnB_other_production/labels/',
+            'images': f'datasets/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_3b_ZO_AnB_other_production/labels/',
             'limit': 2364
         },
         {
-            'images': f'examples/aanvraag_besluit/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_4_ZO_other_production/labels/',
+            'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_4_ZO_other_production/labels/',
             'limit': 332
         },
     ]
@@ -150,17 +150,17 @@ def load_data_aanvraag(img_dim, random_state=42):
     # May be larger than problem space (contain synthetic images or tangentially related)
     inputs_train_only = [
         {
-            'images': f'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_3a_ZO_AnB_aanvragen/labels/',
+            'images': f'datasets/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_3a_ZO_AnB_aanvragen/labels/',
             'limit': 700
         },
         {
-            'images': f'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_1_mixed_hand_annotated/labels/'
+            'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_1_mixed_hand_annotated/labels/'
         },
         {
-            'images': f'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'examples/aanvraag_besluit/dataset_2_oost_hand_annotated/labels/'
+            'images': f'datasets/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_2_oost_hand_annotated/labels/'
         }
     ]
 
@@ -224,8 +224,8 @@ def load_getting_started_data(img_dim, random_state=42):
     # Represents actual problem space
     inputs = [
         {
-            'images': f'datasets/example/aanvraag_besluit/dataset_0/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'datasets/example/aanvraag_besluit/dataset_0/labels/'
+            'images': f'datasets/dataset_0/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_0/labels/'
         }
     ]
 
