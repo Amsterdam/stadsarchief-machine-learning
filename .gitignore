@@ -1,5 +1,6 @@
 .env
 .ipynb_checkpoints/
+*.zip
 /datasets/dataset_*/
 /input/
 /output/
