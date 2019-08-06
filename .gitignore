@@ -1,6 +1,6 @@
 .env
 .ipynb_checkpoints/
-/examples/
+/datasets/dataset_*/
 /input/
 /output/
 /logs/
