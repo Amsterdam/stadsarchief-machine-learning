@@ -35,22 +35,22 @@ def load_raw(img_dir, label_dir, skip: list, limit: int):
 
     if limit:
         ids = ids[:limit]
-        print(f"Limiting to {limit}")
-    print(f"first few ids: {ids[:5]}")
-    print(f"last few ids: {ids[-5:]}")
+        log.info(f"Limiting to {limit}")
+    log.info(f"first few ids: {ids[:5]}")
+    log.info(f"last few ids: {ids[-5:]}")
 
     # Remove unlabeled ids
     yaml = load_yaml_ids(label_dir, ids)
-    print(f'ids count: {len(ids)}')
+    log.info(f'ids count: {len(ids)}')
     ids = filter_unlabeled(yaml, ids)
-    print(f'ids with label count: {len(ids)}')
-    print('loading yaml filtered')
+    log.info(f'ids with label count: {len(ids)}')
+    log.info('loading yaml filtered')
     yaml = load_yaml_ids(label_dir, ids)
 
     log.info('loading images')
     X = load_X(img_dir, ids)
-    print(f'type of nparray: {X.dtype}')
-    print(f'{round(X.nbytes / 1024**2, 3)}MB')
+    log.info(f'type of nparray: {X.dtype}')
+    log.info(f'{round(X.nbytes / 1024**2, 3)}MB')
 
     log.info('processing meta data')
     Y = process_attributes(yaml)
@@ -79,12 +79,12 @@ def load_set(multiple_inputs, skip: list):
     Data_acc = None
     Label_acc = None
     for input_dirs in multiple_inputs:
-        print('--- loading set: ', input_dirs)
+        log.info(f'--- loading set: {input_dirs}')
         limit = input_dirs.get('limit')
-        print("Limit:", limit)
+        log.info(f'Limit: {limit}')
         [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip, limit=limit)
-        print(f'unique counts: {np.unique(Label, return_counts=True)}')
-        print(f'Img shape: {Img.shape}')
+        log.info(f'unique counts: {np.unique(Label, return_counts=True)}')
+        log.info(f'Img shape: {Img.shape}')
         if Img_acc is None:
             Img_acc = Img
             Data_acc = Data
@@ -174,17 +174,17 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Stage 1, load features and labels for both input sets
     #
     [Img_in, Data_in, Label_in] = load_set(inputs, ids_to_skip)
-    print('Img_in.shape', Img_in.shape)
-    print('Data_in.shape', Data_in.shape)
-    print('Label_in.shape', Label_in.shape)
-    print()
+    log.info(f'Img_in.shape: {Img_in.shape}')
+    log.info(f'Data_in.shape: {Data_in.shape}')
+    log.info(f'Label_in.shape: {Label_in.shape}')
+    log.info('')
 
     [Img_in_train, Data_in_train, Label_in_train] = load_set(inputs_train_only, ids_to_skip)
-    print('Img_in_train.shape', Img_in_train.shape)
-    print('Data_in_train.shape', Data_in_train.shape)
-    print('Label_in_train.shape', Label_in_train.shape)
-    print('Img_in_train.shape', Img_in_train.shape)
-    print()
+    log.info(f'Img_in_train.shape: {Img_in_train.shape}')
+    log.info(f'Data_in_train.shape: {Data_in_train.shape}')
+    log.info(f'Label_in_train.shape: {Label_in_train.shape}')
+    log.info(f'Img_in_train.shape: {Img_in_train.shape}')
+    log.info('')
 
     #
     # Stage 2, redistribute data to form Train, validation and test sets
@@ -194,7 +194,7 @@ def load_data_aanvraag(img_dim, random_state=42):
     # (hold out) Test = subset of inputs set
     count = Img_in.shape[0]
     splits = [int(.55 * count), int(.99 * count)]
-    print('splits', splits)
+    log.info('splits: {splits}')
     [Img_train_extra, Img_valid, Img_test] = np.vsplit(Img_in, splits)
     [Data_train_extra, Data_valid, Data_test] = np.vsplit(Data_in, splits)
     [Label_train_extra, Label_valid, Label_test] = np.vsplit(Label_in, splits)
@@ -236,17 +236,17 @@ def load_getting_started_data(img_dim, random_state=42):
     # Stage 1, load features and labels for input set
     #
     [Img_in, Data_in, Label_in] = load_set(inputs, ids_to_skip)
-    print('Img_in.shape', Img_in.shape)
-    print('Data_in.shape', Data_in.shape)
-    print('Label_in.shape', Label_in.shape)
-    print()
+    log.info('Img_in.shape', Img_in.shape)
+    log.info('Data_in.shape', Data_in.shape)
+    log.info('Label_in.shape', Label_in.shape)
+    log.info()
 
     #
     # Stage 2, redistribute data to form Train, validation and test sets
     #
     count = Img_in.shape[0]
     splits_indices = [int(splits[0] * count), int(splits[1] * count)]
-    print('splits', splits)
+    log.info('splits', splits)
     [Img_train, Img_valid, Img_test] = np.vsplit(Img_in, splits_indices)
     [Data_train, Data_valid, Data_test] = np.vsplit(Data_in, splits_indices)
     [Label_train, Label_valid, Label_test] = np.vsplit(Label_in, splits_indices)

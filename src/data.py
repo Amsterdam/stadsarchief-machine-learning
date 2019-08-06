@@ -20,12 +20,12 @@ def load_yaml(path):
 
 
 def get_image_path(img_dir, id):
-    filename = f"{id}.jpg"
+    filename = f'{id}.jpg'
     return os.path.join(img_dir, filename)
 
 
 def get_label_path(label_dir, id, extension):
-    filename = f"{id}{extension}"
+    filename = f'{id}{extension}'
     return os.path.join(label_dir, filename)
 
 
@@ -70,11 +70,11 @@ def build_ids(img_dir, label_dir, label_extension, skip=[]):
         label_path = get_label_path(label_dir, id, extension=label_extension)
         if os.path.isfile(label_path):
             if os.stat(label_path).st_size == 0:
-                print(f"label is empty: {id}")
+                log.warning(f'label is empty: {id}')
             else:
                 ids.append(id)
         else:
-            print(f"missing label for id: {id}")
+            log.warning(f'missing label for id: {id}')
 
     return ids
 
@@ -82,7 +82,7 @@ def build_ids(img_dir, label_dir, label_extension, skip=[]):
 def load_data(img_dir, label_dir):
     ids = build_ids(img_dir, label_dir, '.yaml')
 
-    print(f"first few ids: {ids[:5]}")
+    print(f'first few ids: {ids[:5]}')
 
     X = load_X(img_dir, ids)
     Y = load_yaml_ids(label_dir, ids)
