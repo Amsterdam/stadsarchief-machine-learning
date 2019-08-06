@@ -1,14 +1,16 @@
 import numpy as np
 
 
-# Create Y variables from meta data
+from .transform import transform_aanvraag_labels
+
+
 def extract_type(Ymeta):
+    """
+    Create Y variables from meta data
+    :param Ymeta:
+    :return:
+    """
     return np.array([y.get('type') for y in Ymeta])
-
-
-# All possible classes to "aanvraag" and "other"
-def filter_Y(Ytype):
-    return ['aanvraag' if x == 'aanvraag' else 'other' for x in Ytype]
 
 
 def create_Z(Ymeta, verbose=False):
@@ -21,7 +23,7 @@ def create_Z(Ymeta, verbose=False):
     if verbose:
         print('--- Classes ---')
         print('\n'.join(classes))
-    Yfilter = np.array(filter_Y(Ytype))
+    Yfilter = np.array(transform_aanvraag_labels(Ytype))
     classes = list(set(Yfilter))
     if verbose:
         print('--- reducing ---')

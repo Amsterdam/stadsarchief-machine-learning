@@ -1,14 +1,12 @@
 import logging
-import math
-from itertools import compress
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
 from src.data import build_ids, load_X, load_yaml_ids
 from .load_y import create_Z
+from .filter import filter_unlabeled, filter_unchecked
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -21,12 +19,6 @@ def getInt(value: str):
         return None
     except ValueError:
         return None
-
-
-def filter_unlabeled(yaml, data_list: list):
-    bool_arr = [item.get('type') != '' for item in yaml]
-    data_list_filtered = list(compress(data_list, bool_arr))
-    return data_list_filtered
 
 
 def load_raw(img_dir, label_dir, skip: list, limit: int):
@@ -42,12 +34,15 @@ def load_raw(img_dir, label_dir, skip: list, limit: int):
     # Remove unlabeled ids
     yaml = load_yaml_ids(label_dir, ids)
     log.info(f'ids count: {len(ids)}')
-    ids = filter_unlabeled(yaml, ids)
-    log.info(f'ids with label count: {len(ids)}')
-    log.info('loading yaml filtered')
-    yaml = load_yaml_ids(label_dir, ids)
+    yaml, ids = filter_unlabeled(yaml, ids)
+    log.info(f'ids  with label count: {len(ids)}')
+    log.info(f'yaml with label count: {len(yaml)}')
 
-    log.info('loading images')
+    yaml, ids = filter_unchecked(yaml, ids)
+    log.info(f'ids  with check count: {len(ids)}')
+    log.info(f'yaml with check count: {len(yaml)}')
+
+    log.info('loading images...')
     X = load_X(img_dir, ids)
     log.info(f'type of nparray: {X.dtype}')
     log.info(f'{round(X.nbytes / 1024**2, 3)}MB')
@@ -138,12 +133,12 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3b_ZO_AnB_other_production/labels/',
-            'limit': 2364
+            'limit': 3000
         },
         {
             'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_4_ZO_other_production/labels/',
-            'limit': 332
+            'limit': 500
         },
     ]
 
@@ -152,7 +147,7 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3a_ZO_AnB_aanvragen/labels/',
-            'limit': 700
+            'limit': 1000
         },
         {
             'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
@@ -194,7 +189,7 @@ def load_data_aanvraag(img_dim, random_state=42):
     # (hold out) Test = subset of inputs set
     count = Img_in.shape[0]
     splits = [int(.55 * count), int(.99 * count)]
-    log.info('splits: {splits}')
+    log.info(f'splits: {splits}')
     [Img_train_extra, Img_valid, Img_test] = np.vsplit(Img_in, splits)
     [Data_train_extra, Data_valid, Data_test] = np.vsplit(Data_in, splits)
     [Label_train_extra, Label_valid, Label_test] = np.vsplit(Label_in, splits)
@@ -236,17 +231,17 @@ def load_getting_started_data(img_dim, random_state=42):
     # Stage 1, load features and labels for input set
     #
     [Img_in, Data_in, Label_in] = load_set(inputs, ids_to_skip)
-    log.info('Img_in.shape', Img_in.shape)
-    log.info('Data_in.shape', Data_in.shape)
-    log.info('Label_in.shape', Label_in.shape)
-    log.info()
+    log.info(f'Img_in.shape: {Img_in.shape}')
+    log.info(f'Data_in.shape: {Data_in.shape}')
+    log.info(f'Label_in.shape: {Label_in.shape}')
+    log.info('')
 
     #
     # Stage 2, redistribute data to form Train, validation and test sets
     #
     count = Img_in.shape[0]
     splits_indices = [int(splits[0] * count), int(splits[1] * count)]
-    log.info('splits', splits)
+    log.info(f'splits: {splits}')
     [Img_train, Img_valid, Img_test] = np.vsplit(Img_in, splits_indices)
     [Data_train, Data_valid, Data_test] = np.vsplit(Data_in, splits_indices)
     [Label_train, Label_valid, Label_test] = np.vsplit(Label_in, splits_indices)
