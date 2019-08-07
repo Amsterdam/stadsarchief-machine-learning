@@ -3,20 +3,16 @@ Flask app allowing annotations of yaml label files
 """
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import logging
 import os
-import sys
-from data import LabelData
+from .LabelData import LabelData
+from predict.iiif_url import get_image_url
 
 label_dir = os.environ.get('LABEL_DIR')
 assert label_dir, 'path to label dir required (directory with <id>.yaml files)'
 
-log_level = logging.DEBUG
-root = logging.getLogger()
-root.setLevel(log_level)
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(log_level)
-root.addHandler(handler)
+iiif_api_root = os.environ.get('IIIF_API_ROOT')
+assert iiif_api_root
+
 
 data = LabelData(label_dir)
 
@@ -33,7 +29,15 @@ def get_ids():
 @app.route('/<id>')
 def get_single(id):
     item = data.get_example(id)
-    return jsonify(item)
+    dim = [1200, 1200]
+    stadsdeel_code = item.get('stadsdeel_code')
+    dossier_nummer = item.get('dossier_nummer')
+    filename = f'{id}.jpg'
+    url = get_image_url(iiif_api_root, stadsdeel_code, dossier_nummer, filename, dim)
+    return jsonify({
+        'url': url,
+        'meta': item
+    })
 
 
 @app.route('/<id>', methods=['PUT'])
