@@ -1,6 +1,7 @@
 .env
 .idea
 .venv
+*.zip
 .ipynb_checkpoints
 cache
 input
