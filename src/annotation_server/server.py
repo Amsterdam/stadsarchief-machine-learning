@@ -43,9 +43,9 @@ def create_app(iiif_api_root, label_dir, image_dir):
     if image_dir:
         log.info(f'Serving images from {app.root_path}/{image_dir}')
 
-        @app.route('/<basename>.jpg')
-        def get_image(basename):
-            filename = f'{basename}.jpg'
+        @app.route('/<basename>.<extension>')  # route specific so doesn't interfere with `/<id>` route
+        def get_image(basename, extension):
+            filename = f'{basename}.{extension}'
             return send_from_directory(image_dir, filename)
 
     return app

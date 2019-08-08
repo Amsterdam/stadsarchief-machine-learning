@@ -25,3 +25,16 @@ def filter_unchecked(yaml_items: list, data_list: list):
     yaml_items_filtered = list(compress(yaml_items, bool_arr))
     data_list_filtered = list(compress(data_list, bool_arr))
     return yaml_items_filtered, data_list_filtered
+
+
+def filter_unknown(yaml_items: list, data_list: list):
+    """
+    Removes items of "unknown" type
+    :param yaml_items:
+    :param data_list:
+    :return:
+    """
+    bool_arr = [item.get('type') != 'unknown' for item in yaml_items]
+    yaml_items_filtered = list(compress(yaml_items, bool_arr))
+    data_list_filtered = list(compress(data_list, bool_arr))
+    return yaml_items_filtered, data_list_filtered

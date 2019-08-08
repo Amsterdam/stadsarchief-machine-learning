@@ -6,7 +6,7 @@ from sklearn.utils import shuffle
 
 from src.data import build_ids, load_X, load_yaml_ids
 from .load_y import create_Z
-from .filter import filter_unlabeled, filter_unchecked
+from .filter import filter_unlabeled, filter_unchecked, filter_unknown
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -41,6 +41,10 @@ def load_raw(img_dir, label_dir, skip: list, limit: int):
     yaml, ids = filter_unchecked(yaml, ids)
     log.info(f'ids  with check count: {len(ids)}')
     log.info(f'yaml with check count: {len(yaml)}')
+
+    yaml, ids = filter_unknown(yaml, ids)
+    log.info(f'ids  with !unknown type count: {len(ids)}')
+    log.info(f'yaml with !unknown type count: {len(yaml)}')
 
     log.info('loading images...')
     X = load_X(img_dir, ids)
