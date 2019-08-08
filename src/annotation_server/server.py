@@ -42,7 +42,7 @@ def create_app(iiif_api_root, label_dir, image_dir):
 
     if image_dir:
         log.info(f'Serving images from {app.root_path}/{image_dir}')
-        
+
         @app.route('/<basename>.jpg')
         def get_image(basename):
             filename = f'{basename}.jpg'
