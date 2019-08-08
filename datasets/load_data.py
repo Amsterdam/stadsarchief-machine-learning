@@ -137,12 +137,10 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3b_ZO_AnB_other_production/labels/',
-            'limit': 3000
         },
         {
             'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_4_ZO_other_production/labels/',
-            'limit': 500
         },
     ]
 
@@ -151,7 +149,7 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3a_ZO_AnB_aanvragen/labels/',
-            'limit': 1000
+            'limit': 99999
         },
         {
             'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
