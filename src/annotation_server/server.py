@@ -34,7 +34,7 @@ def create_app(iiif_api_root, label_dir, image_dir, csv_path):
         filename = f'{id}.jpg'
         url = get_image_url(iiif_api_root, stadsdeel_code, dossier_nummer, filename, dim)
 
-        if predictions:
+        if csv_path:
             extra_meta = predictions.get_example(id)
             item['confidence'] = extra_meta['confidence']
             item['prediction'] = extra_meta['prediction']
