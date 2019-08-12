@@ -38,7 +38,7 @@ def write_labelfile(id, data):
     exists = os.path.isfile(filename)
     print(f'{filename}, {exists}')
     if OVERWRITE_LABEL or not exists:
-        print('wrinting')
+        print('writing')
         with open(filename, 'w') as outfile:
             yaml.dump(data, outfile, default_flow_style=False)
 

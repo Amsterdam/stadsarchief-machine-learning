@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .filter import filter_unlabeled, filter_unchecked
+from .filter import filter_unlabeled, filter_unchecked, filter_unknown
 
 
 class TestFilter(TestCase):
@@ -35,4 +35,21 @@ class TestFilter(TestCase):
         self.assertSequenceEqual(ids_filtered, ['id4', ])
         self.assertSequenceEqual(yaml_filtered, [
             {'type': 'foo', 'checked': True},
+        ])
+
+    def test_filter_unknown(self):
+        yaml = [
+            {'type': 'bar', 'otherprop': 'a'},
+            {'type': 'unknown', 'otherprop': 'b'},
+            {'type': 'xyz', 'otherprop': 'c'},
+            {'type': 'foo', 'otherprop': 'd'},
+        ]
+        ids = ['id1', 'id2', 'id3', 'id4']
+        yaml_filtered, ids_filtered = filter_unknown(yaml, ids)
+
+        self.assertSequenceEqual(ids_filtered, ['id1', 'id3', 'id4' ])
+        self.assertSequenceEqual(yaml_filtered, [
+            {'type': 'bar', 'otherprop': 'a'},
+            {'type': 'xyz', 'otherprop': 'c'},
+            {'type': 'foo', 'otherprop': 'd'},
         ])

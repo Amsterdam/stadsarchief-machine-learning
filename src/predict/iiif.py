@@ -1,10 +1,10 @@
 import logging
 import os
-import urllib
 import httpx
 from httpx.exceptions import HttpError
 
 from predict.config import IIIF_TIMEOUT
+from predict.iiif_url import get_image_url
 
 log = logging.getLogger(__name__)
 
@@ -51,10 +51,7 @@ class IIIFClient:
         target_dir = self.get_image_dir(dim)
         target_file = os.path.join(target_dir, filename)
 
-        document_part = f'{stadsdeel_code}/{dossier_nummer}/{filename}'
-
-        document_encoded = urllib.parse.quote_plus(document_part)
-        url = f'{self.apiRoot}{document_encoded}/full/{dim[0]},{dim[1]}/0/default.jpg'
+        url = get_image_url(self.apiRoot, stadsdeel_code, dossier_nummer, filename, dim)
         if os.path.isfile(target_file):
             log.info(f'skipping download, file exists: {filename}')
         else:

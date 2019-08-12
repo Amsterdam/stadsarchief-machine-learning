@@ -6,7 +6,7 @@ from sklearn.utils import shuffle
 
 from src.data import build_ids, load_X, load_yaml_ids
 from .load_y import create_Z
-from .filter import filter_unlabeled, filter_unchecked
+from .filter import filter_unlabeled, filter_unchecked, filter_unknown
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -41,6 +41,10 @@ def load_raw(img_dir, label_dir, skip: list, limit: int):
     yaml, ids = filter_unchecked(yaml, ids)
     log.info(f'ids  with check count: {len(ids)}')
     log.info(f'yaml with check count: {len(yaml)}')
+
+    yaml, ids = filter_unknown(yaml, ids)
+    log.info(f'ids  with !unknown type count: {len(ids)}')
+    log.info(f'yaml with !unknown type count: {len(yaml)}')
 
     log.info('loading images...')
     X = load_X(img_dir, ids)
@@ -133,12 +137,10 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3b_ZO_AnB_other_production/labels/',
-            'limit': 3000
         },
         {
             'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_4_ZO_other_production/labels/',
-            'limit': 500
         },
     ]
 
@@ -147,7 +149,7 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3a_ZO_AnB_aanvragen/labels/',
-            'limit': 1000
+            'limit': 99999
         },
         {
             'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
@@ -190,6 +192,7 @@ def load_data_aanvraag(img_dim, random_state=42):
     count = Img_in.shape[0]
     splits = [int(.55 * count), int(.99 * count)]
     log.info(f'splits: {splits}')
+    Img_in, Data_in, Label_in = shuffle(Img_in, Data_in, Label_in, random_state=random_state)
     [Img_train_extra, Img_valid, Img_test] = np.vsplit(Img_in, splits)
     [Data_train_extra, Data_valid, Data_test] = np.vsplit(Data_in, splits)
     [Label_train_extra, Label_valid, Label_test] = np.vsplit(Label_in, splits)
