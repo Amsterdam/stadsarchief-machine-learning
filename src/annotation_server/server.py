@@ -4,14 +4,18 @@ Flask app allowing annotations of yaml label files
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import logging
+
+from annotation_server.PredictionData import PredictionData
 from .LabelData import LabelData
 from predict.iiif_url import get_image_url
 
 log = logging.getLogger(__name__)
 
 
-def create_app(iiif_api_root, label_dir, image_dir):
+def create_app(iiif_api_root, label_dir, image_dir, csv_path):
     data = LabelData(label_dir)
+    if csv_path:
+        predictions = PredictionData(csv_path)
 
     app = Flask(__name__)
     CORS(app)
@@ -29,6 +33,12 @@ def create_app(iiif_api_root, label_dir, image_dir):
         dossier_nummer = item.get('dossier_nummer')
         filename = f'{id}.jpg'
         url = get_image_url(iiif_api_root, stadsdeel_code, dossier_nummer, filename, dim)
+
+        if predictions:
+            extra_meta = predictions.get_example(id)
+            item['confidence'] = extra_meta['confidence']
+            item['prediction'] = extra_meta['prediction']
+
         return jsonify({
             'url': url,
             'meta': item

@@ -22,4 +22,6 @@ assert label_dir, 'path to label dir required (directory with <id>.yaml files)'
 
 image_dir = os.environ.get('IMAGE_DIR')  # path from Flask root_path (which is from this python file directory), not working directory!
 
-app = create_app(iiif_api_root, label_dir, image_dir)
+prediction_csv = os.environ.get('PREDICTION_CSV')
+
+app = create_app(iiif_api_root, label_dir, image_dir, prediction_csv)
