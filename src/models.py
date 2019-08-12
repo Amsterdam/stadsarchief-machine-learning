@@ -86,6 +86,51 @@ def create_cnn(img_dim, num_classes=None):
     return model
 
 
+def create_cnn_g(img_dim, num_classes=None, drop_chance=0.0):
+    inputs = layers.Input(shape=img_dim, name="input-cnn")
+
+    batch_norm = False
+    use_bias = not batch_norm
+
+    x = layers.Conv2D(16, (3, 3), kernel_initializer='glorot_normal')(inputs)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+    x = layers.Dropout(drop_chance / 4.0)(x)
+
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal')(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+    x = layers.Dropout(drop_chance / 3.0)(x)
+
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal')(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+    x = layers.Dropout(drop_chance / 2.0)(x)
+
+    x = layers.Conv2D(32, (3, 3), kernel_initializer='glorot_normal')(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    x = layers.MaxPooling2D(pool_size=(2, 2))(x)
+    x = layers.Dropout(drop_chance)(x)
+
+    x = layers.Flatten()(x)
+
+    x = layers.Dense(16, kernel_initializer='glorot_normal', use_bias=use_bias)(x)
+    x = layers.Dropout(drop_chance)(x)
+    if batch_norm:
+        x = layers.BatchNormalization()(x)
+    x = layers.LeakyReLU(alpha=lr_alpha)(x)
+
+    if num_classes is not None:
+        x = layers.Dense(2, kernel_initializer='glorot_normal', activation="softmax", name='output')(x)
+
+    model = Model(inputs, x)
+    return model
+
+
 def create_cnn_f(img_dim, num_classes=None):
     inputs = layers.Input(shape=img_dim, name="input-cnn")
 

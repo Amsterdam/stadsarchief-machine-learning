@@ -192,6 +192,7 @@ def load_data_aanvraag(img_dim, random_state=42):
     count = Img_in.shape[0]
     splits = [int(.55 * count), int(.99 * count)]
     log.info(f'splits: {splits}')
+    Img_in, Data_in, Label_in = shuffle(Img_in, Data_in, Label_in, random_state=random_state)
     [Img_train_extra, Img_valid, Img_test] = np.vsplit(Img_in, splits)
     [Data_train_extra, Data_valid, Data_test] = np.vsplit(Data_in, splits)
     [Label_train_extra, Label_valid, Label_test] = np.vsplit(Label_in, splits)
