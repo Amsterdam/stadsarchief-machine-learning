@@ -36,8 +36,9 @@ def create_app(iiif_api_root, label_dir, image_dir, csv_path):
 
         if csv_path:
             extra_meta = predictions.get_example(id)
-            item['confidence'] = extra_meta['confidence']
-            item['prediction'] = extra_meta['prediction']
+            if extra_meta:
+                item['confidence'] = extra_meta['confidence']
+                item['prediction'] = extra_meta['prediction']
 
         return jsonify({
             'url': url,

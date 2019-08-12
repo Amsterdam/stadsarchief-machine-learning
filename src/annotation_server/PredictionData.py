@@ -19,10 +19,15 @@ class PredictionData:
     def get_example(self, id: str):
         df = self.data
         selection: pd.DataFrame = df.loc[df['file_name'] == f'{id}.jpg']
-        hit: pd.Series = selection.iloc[0]
-        data = {
-            'confidence': hit['confidence'],
-            'prediction': hit['prediction'],
-        }
-        log.debug(f'prediction data for {id}: {data}')
-        return data
+
+        if selection.empty:
+            log.debug(f'No prediction results for {id}')
+            return None
+        else:
+            hit: pd.Series = selection.iloc[0]
+            data = {
+                'confidence': hit['confidence'],
+                'prediction': hit['prediction'],
+            }
+            log.debug(f'prediction data for {id}: {data}')
+            return data
