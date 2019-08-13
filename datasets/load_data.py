@@ -9,7 +9,6 @@ from .load_y import create_Z
 from .filter import filter_unlabeled, filter_unchecked, filter_unknown
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
 
 
 def getInt(value: str):
@@ -28,23 +27,23 @@ def load_raw(img_dir, label_dir, skip: list, limit: int):
     if limit:
         ids = ids[:limit]
         log.info(f"Limiting to {limit}")
-    log.info(f"first few ids: {ids[:5]}")
-    log.info(f"last few ids: {ids[-5:]}")
+    log.debug(f"first few ids: {ids[:5]}")
+    log.debug(f"last few ids: {ids[-5:]}")
 
     # Remove unlabeled ids
     yaml = load_yaml_ids(label_dir, ids)
-    log.info(f'ids count: {len(ids)}')
+    log.debug(f'ids count: {len(ids)}')
     yaml, ids = filter_unlabeled(yaml, ids)
-    log.info(f'ids  with label count: {len(ids)}')
-    log.info(f'yaml with label count: {len(yaml)}')
+    log.debug(f'ids  with label count: {len(ids)}')
+    log.debug(f'yaml with label count: {len(yaml)}')
 
     yaml, ids = filter_unchecked(yaml, ids)
-    log.info(f'ids  with check count: {len(ids)}')
-    log.info(f'yaml with check count: {len(yaml)}')
+    log.debug(f'ids  with check count: {len(ids)}')
+    log.debug(f'yaml with check count: {len(yaml)}')
 
     yaml, ids = filter_unknown(yaml, ids)
-    log.info(f'ids  with !unknown type count: {len(ids)}')
-    log.info(f'yaml with !unknown type count: {len(yaml)}')
+    log.debug(f'ids  with !unknown type count: {len(ids)}')
+    log.debug(f'yaml with !unknown type count: {len(yaml)}')
 
     log.info('loading images...')
     X = load_X(img_dir, ids)
@@ -82,8 +81,8 @@ def load_set(multiple_inputs, skip: list):
         limit = input_dirs.get('limit')
         log.info(f'Limit: {limit}')
         [Img, Data, Label, _] = load_raw(input_dirs.get('images'), input_dirs.get('labels'), skip, limit=limit)
-        log.info(f'unique counts: {np.unique(Label, return_counts=True)}')
-        log.info(f'Img shape: {Img.shape}')
+        log.debug(f'unique counts: {np.unique(Label, return_counts=True)}')
+        log.debug(f'Img shape: {Img.shape}')
         if Img_acc is None:
             Img_acc = Img
             Data_acc = Data
@@ -137,11 +136,13 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3b_ZO_AnB_other_production/labels/',
+            # 'limit': 100
         },
-        {
-            'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'datasets/dataset_4_ZO_other_production/labels/',
-        },
+        # {
+        #     'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+        #     'labels': 'datasets/dataset_4_ZO_other_production/labels/',
+        #     'limit': 100
+        # },
     ]
 
     # May be larger than problem space (contain synthetic images or tangentially related)
@@ -149,16 +150,18 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3a_ZO_AnB_aanvragen/labels/',
-            'limit': 99999
+            'limit': 100
         },
-        {
-            'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'datasets/dataset_1_mixed_hand_annotated/labels/'
-        },
-        {
-            'images': f'datasets/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
-            'labels': 'datasets/dataset_2_oost_hand_annotated/labels/'
-        }
+        # {
+        #     'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
+        #     'labels': 'datasets/dataset_1_mixed_hand_annotated/labels/',
+        #     'limit': 100
+        # },
+        # {
+        #     'images': f'datasets/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
+        #     'labels': 'datasets/dataset_2_oost_hand_annotated/labels/',
+        #     'limit': 100
+        # }
     ]
 
     ids_to_skip = [
