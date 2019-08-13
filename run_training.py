@@ -8,13 +8,13 @@ import keras
 import numpy as np
 import logging
 import sys
-# from src.helper import tensorflow_gpu_supported
 from keras_preprocessing.image import ImageDataGenerator
 
 from data import DataGrouping, DataBlock
 from helper import feature_preprocess
+from persistence.persistence import save_model_and_pre_processing
 from src import helper
-from stats import list_stats
+from stats import list_label_stats, show_prediction_list
 from train import TrainingConfiguration, train_model
 from util.np_size import display_MB
 from datasets.load_data import load_data_aanvraag, load_getting_started_data
@@ -24,10 +24,6 @@ gpus, devices = helper.tensorflow_gpu_supported()
 print(f'gpus: {gpus}')
 print(f'local devices: {devices}')
 
-# Set tensorflow GPU memory usage to on demand rather than preallocate.
-# config = tf.ConfigProto()
-# config.gpu_options.allow_growth = True
-# K.tensorflow_backend.set_session(tf.Session(config=config))
 helper.gpu_memory_to_on_demand()
 
 log = logging.getLogger(__name__)
@@ -96,10 +92,10 @@ def pre_process(data: DataGrouping):
     classes, Ztrain, Zvalid, labelEncoder, labels = helper.label_preprocessing(Ztrain_raw, Zvalid_raw, 2)
 
     log.info('--- Train ---')
-    list_stats(Ztrain_raw.ravel())
+    list_label_stats(Ztrain_raw.ravel())
 
     log.info('--- Valid ---')
-    list_stats(Zvalid_raw.ravel())
+    list_label_stats(Zvalid_raw.ravel())
 
     log.info('--- transform ---')
     log.info(f'labels:\n{labels}')
@@ -137,66 +133,29 @@ def define_model(img_dim, num_classes=2):
 
 def evaluate_model(model, data: DataGrouping):
     train_score = model.evaluate(data.train.images, data.train.labels, verbose=1)
-    print('Train loss:', round(train_score[0], 3))
-    print(f'Train accuracy: {round(train_score[1] * 100, 2)}%')
-    #
+    log.info(f'Train loss: {round(train_score[0], 3)}')
+    log.info(f'Train accuracy: {round(train_score[1] * 100, 2)}%')
+
     valid_score = model.evaluate(data.valid.images, data.valid.labels, verbose=1)
-    print('Test loss:', round(valid_score[0], 3))
+    log.info(f'Test loss: {round(valid_score[0], 3)}')
     valid_acc_str = f'{round(valid_score[1] * 100, 2)}%'
-    print(f'Test accuracy: {valid_acc_str}')
+    log.info(f'Test accuracy: {valid_acc_str}')
 
-    print("train predictions, truth")
+    log.info("train predictions, truth")
     predictions_train =  model.predict(data.train.images, verbose=1)
-    # show_prediction_list(predictions_train, Ztrain)
+    show_prediction_list(predictions_train, data.train.labels)
 
-    print("test predictions, truth")
+    log.info("test predictions, truth")
     predictions_valid = model.predict(data.valid.images, verbose=1)
-    # show_prediction_list(predictions_valid, Zvalid)
+    show_prediction_list(predictions_valid, data.valid.labels)
 
 
-def persist(model, encoders):
-    # DIR = './output'
-    # os.makedirs(DIR, exist_ok=True)
-    #
-    # df = helper.predictions_overview(Ztrain, predictions_train, Ytrain_raw[:, 2], labelEncoder)
-    # df.to_csv(os.path.join(DIR, 'train_predictions.csv'))
-    # print('--- Train ---')
-    # print(df)
-    #
-    # df = helper.predictions_overview(Zvalid, predictions_valid, Yvalid_raw[:, 2], labelEncoder)
-    # df.to_csv(os.path.join(DIR, 'validation_predictions.csv'))
-    # print('--- Validation ---')
-    # print(df)
-    #
-    #
-    # # In[ ]:
-    #
-    #
-    # print('writing image encoder to disk')
-    # imageEncoder.save(TRANSFORM_DIR)
-    #
-    # print('writing label encoder to disk')
-    # labelEncoder.save(TRANSFORM_DIR)
-    #
-    #
-    # # In[ ]:
-    #
-    #
-    # # def write_model(model, directory):
-    # #     model_json = model.to_json()
-    # #     json_path = os.path.join(directory, "model.json")
-    # #     weights_path = os.path.join(directory, "weights.h5")
-    # #     with open(json_path, "w") as json_file:
-    # #         json_file.write(model_json)
-    # #     model.save_weights(weights_path)
-    #
-    # helper.write_model(model, MODEL_DIR)
-    # print(f"Model written to {MODEL_DIR}")
-
-
+def persist(model, encoders, model_out_dir):
+    save_model_and_pre_processing(model, encoders.get('imageEncoder'), encoders.get('labelEncoder'), model_out_dir)
 
 
 def main():
+    model_out_dir = './output/model/'
     log_dir = './logs/'
     img_dim = (250, 250, 3)
 
@@ -226,7 +185,7 @@ def main():
 
     train_config = TrainingConfiguration(
         # epochs=150,
-        epochs=1,
+        epochs=4,
         batch_size=20,
         optimizer=keras.optimizers.Adam(lr=learning_rate),
         data_generator=data_generator,
@@ -249,7 +208,11 @@ def main():
     # Training
     train_model(model, data, train_config, log_dir)
 
+    # Evaluate
     evaluate_model(model, data)
+
+    # Persistence
+    persist(model, encoders, model_out_dir)
 
 
 if __name__ == '__main__':

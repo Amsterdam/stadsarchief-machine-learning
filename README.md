@@ -37,6 +37,8 @@ After this you can run the following from the `src/` folder:
 
 After this has finished, the result can be found in `output/prediction/`
 
+### 2. Predictions
+
 
 ## Domain model
 The stadsarchief datasets consistist of scans along with metadata.

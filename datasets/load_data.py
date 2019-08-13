@@ -136,7 +136,7 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3b_ZO_AnB_other_production/labels/',
-            # 'limit': 100
+            'limit': 100
         },
         # {
         #     'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
