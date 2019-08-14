@@ -1,7 +1,8 @@
+import asyncio
 import logging
 import os
 import httpx
-from httpx.exceptions import HttpError
+from httpx.exceptions import HttpError, Timeout
 
 from predict.config import IIIF_TIMEOUT
 from predict.iiif_url import get_image_url
@@ -33,7 +34,33 @@ class IIIFClient:
         return dir
 
     async def download_image(self, url, target_file):
-        r = await self.httpxClient.get(url, timeout=IIIF_TIMEOUT)
+        tries = 3
+        sleep_time = 3  # seconds
+        done = False
+        while not done and tries >= 0:
+            r = None
+            try:
+                r = await self.httpxClient.get(url, timeout=IIIF_TIMEOUT)
+            except Timeout as e:
+                log.error(f'Timeout exception, likely: {e}')
+            except OSError as e:
+                log.error(f'OSError, likely connection error: {e}')
+            except Exception as e:
+                log.error(f'Unknown exception: {type(e)}, {e}')
+
+            if r is not None:
+                if 500 <= r.status_code < 600:
+                    log.error(f'Server error: {r.status_code}')
+                else:
+                    done = True
+
+            if not done:
+                tries -= 1
+                await asyncio.sleep(sleep_time)
+                log.info(f'retrying {tries} more times')
+        if not done:
+            raise Exception(f'too many retries to get {url} -> {target_file}')
+
         if 400 <= r.status_code < 600:
             # Raise 4xx or 5xx exception, e.g.: 404 exception.
             # Using httpx raise_for_status to get error message
