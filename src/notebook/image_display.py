@@ -18,38 +18,58 @@ def show_image(image):
 def show_prediction_images(
         X: np.ndarray,
         Y: np.ndarray,
-        predictions: list,
+        predictions: np.ndarray,
         references: list,
         encoder,
         limit=3,
+        filter=None,
         columns=3
 ):
+    """
+    Show prediction images along with expected and predicted values
+    :param X: images, channel last
+    :param Y: One hot true labels
+    :param predictions: One hot predictions
+    :param references:
+    :param encoder:
+    :param limit:
+    :param filter: list of ids to filter by
+    :param columns:
+    :return:
+    """
     assert (predictions.shape[0] == Y.shape[0])
-    # if len(Y.shape) != 1:
-    #     # Not binary classification
-    #     Y = np.argmax(Y, axis=1)
-    #     Y = Y.reshape(-1, 1)
 
-    predictions_id = np.argmax(predictions, axis=1)
+    confidences = np.max(predictions, axis=1)
 
     y_class = encoder.inverse_transform(Y)
     pred_class = encoder.inverse_transform(predictions)
 
-    plt.figure(figsize=(20, math.ceil(limit / columns) * 7))
+    if filter is not None:
+        # limit to ids in list
+        assert type(filter) == list or type(filter) == np.ndarray
+        indices = np.where(np.isin(references, filter))[0]
+        indices = indices[:limit]
+    else:
+        indices = range(0, limit)
 
-    images = X[:limit, :, :, :]
-    for i, image in enumerate(images):
-        plt.subplot(len(images) / columns + 1, columns, i + 1)
-        expected = y_class[i]
-        predict_confidence = predictions[i, predictions_id[i]]
-        rounded = str(round(predict_confidence, 2))
+    images = X
 
-        predict_name = pred_class[i]
-        id = references[i]
+    count = len(indices)
+    plt.figure(figsize=(20, math.ceil(count / columns) * 7))
+    print(f'showing {count} image(s)')
+
+    for i, index in enumerate(indices):
+        image = images[index, :, :, :]
+        plt.subplot(count / columns + 1, columns, i + 1)
+        expected = y_class[index]
+        confidence = str(round(confidences[index], 2))
+
+        predict_name = pred_class[index]
+        id = references[index]
         is_correct = expected == predict_name
         if is_correct:
-            plt.gca().set_title(f"{id}, {rounded}: {predict_name}\u2713")
+            plt.gca().set_title(f"{id}, {confidence}: {predict_name}\u2713")
         else:
-            plt.gca().set_title(f"{id}, {rounded}: {predict_name} -> {expected}")
+            plt.gca().set_title(f"{id}, {confidence}: {predict_name} -> {expected}")
         plt.imshow(image)
     plt.show()
