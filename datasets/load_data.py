@@ -136,13 +136,13 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3b_ZO_AnB_other_production/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3b_ZO_AnB_other_production/labels/',
-            'limit': 100
+            # 'limit': 100
         },
-        # {
-        #     'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
-        #     'labels': 'datasets/dataset_4_ZO_other_production/labels/',
-        #     'limit': 100
-        # },
+        {
+            'images': f'datasets/dataset_4_ZO_other_production/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_4_ZO_other_production/labels/',
+            # 'limit': 100
+        },
     ]
 
     # May be larger than problem space (contain synthetic images or tangentially related)
@@ -150,18 +150,18 @@ def load_data_aanvraag(img_dim, random_state=42):
         {
             'images': f'datasets/dataset_3a_ZO_AnB_aanvragen/images/{img_dim[0]}x{img_dim[1]}/',
             'labels': 'datasets/dataset_3a_ZO_AnB_aanvragen/labels/',
-            'limit': 100
+            # 'limit': 100
         },
-        # {
-        #     'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
-        #     'labels': 'datasets/dataset_1_mixed_hand_annotated/labels/',
-        #     'limit': 100
-        # },
-        # {
-        #     'images': f'datasets/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
-        #     'labels': 'datasets/dataset_2_oost_hand_annotated/labels/',
-        #     'limit': 100
-        # }
+        {
+            'images': f'datasets/dataset_1_mixed_hand_annotated/resized/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_1_mixed_hand_annotated/labels/',
+            # 'limit': 100
+        },
+        {
+            'images': f'datasets/dataset_2_oost_hand_annotated/images/{img_dim[0]}x{img_dim[1]}/',
+            'labels': 'datasets/dataset_2_oost_hand_annotated/labels/',
+            # 'limit': 100
+        }
     ]
 
     ids_to_skip = [
