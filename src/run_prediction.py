@@ -33,6 +33,11 @@ assert os.getenv('BOUWDOSSIERS_OBJECTSTORE_PASSWORD')
 assert len(sys.argv) == 2
 input_csv = sys.argv[1]
 
+value = os.getenv('SKIP_PREDICTION')
+SKIP_PREDICTION = os.getenv('SKIP_PREDICTION') is not None
+if SKIP_PREDICTION:
+    print(f'SKIP_PREDICTION value is not None (value is {value}). So the prediction step will be skipped.')
+
 
 results = []
 
@@ -150,10 +155,14 @@ async def image_predictor(queue_in):
 
             if path is not None:
                 log.debug(f'stage C, processing {path}')
-                prediction, confidence = predict_single(path)
 
-                result['prediction'] = prediction
-                result['confidence'] = confidence
+                if SKIP_PREDICTION:
+                    log.warning('skipping prediction for {path}')
+                else:
+                    prediction, confidence = predict_single(path)
+
+                    result['prediction'] = prediction
+                    result['confidence'] = confidence
             else:
                 log.debug('stage C, missing path')
 
