@@ -35,7 +35,7 @@ class IIIFClient:
 
     async def download_image(self, url, target_file):
         tries = 3
-        sleep_time = 3  # seconds
+        sleep_time = 30  # seconds
         done = False
         while not done and tries >= 0:
             r = None
@@ -56,6 +56,7 @@ class IIIFClient:
 
             if not done:
                 tries -= 1
+                log.info(f'sleeping {sleep_time}seconds...')
                 await asyncio.sleep(sleep_time)
                 log.info(f'retrying {tries} more times')
         if not done:
