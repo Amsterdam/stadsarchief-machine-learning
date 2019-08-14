@@ -8,16 +8,16 @@ import keras
 import numpy as np
 import logging
 import sys
+from datasets.load_data import load_data_aanvraag, load_getting_started_data
 from keras_preprocessing.image import ImageDataGenerator
 
-from data import DataGrouping, DataBlock
-from helper import feature_preprocess
-from persistence.persistence import save_model_and_pre_processing
+from src.data import DataGrouping, DataBlock
+from src.helper import feature_preprocess
+from src.persistence.persistence import save_model_and_pre_processing
 from src import helper
-from stats import list_label_stats, show_prediction_list
-from train import TrainingConfiguration, train_model
-from util.np_size import display_MB
-from datasets.load_data import load_data_aanvraag, load_getting_started_data
+from src.stats import list_label_stats, show_prediction_list
+from src.train import TrainingConfiguration, train_model
+from src.util.np_size import display_MB
 from src import models as own_models
 
 gpus, devices = helper.tensorflow_gpu_supported()

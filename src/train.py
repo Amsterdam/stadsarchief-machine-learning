@@ -11,7 +11,7 @@ from keras_preprocessing.image import ImageDataGenerator
 import numpy as np
 import tensorflow as tf
 
-from data import DataGrouping, DataBlock
+from src.data import DataGrouping, DataBlock
 
 log = logging.getLogger(__name__)
 
