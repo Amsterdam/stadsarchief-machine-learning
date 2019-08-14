@@ -4,22 +4,35 @@ current state is work in progress for the specific aim to classify bouwdossiers 
 
 
 ## Quickstart
-It is possible to both train a new model, and use the resulting model to get predictions for new input. 
+It is possible to both train a new model, and use the resulting model to get predictions for new input.
+
+### 0. Install
+Install requirements.txt, possibly inside a virtualenv.
+
+For **GPU support** install `tensorflow-gpu` instead of `tensorflow`.
+GPU support is practically required for training.
+Otherwise it will take ages.
 
 ### 1. Train a new model
-Training a model is still done using a jupyter notebook, which (after creating a `venv` and installing the 
-`requirements.txt`) can be opened using:
+Training a model is still done using:
 
-    jupyter notebook
+    python run_training.py
 
-Then open the notebook `src/notebook/AanvraagClassifier.ipynb` in the browser.
-
-After running all the code in the notebook, a model is written to `output/model/`. The added training set is very small 
+After running a model is written to `output/model/`. The added training set is very small 
 and doesn't give you a very good model. To do serious training you can use more data from the object store 
 `9d078258c1a547c09e0b5f88834554f1:bouwdossiers` (credentials are under the name `cloudVPS Bouwdossiers` in Rattic). 
 Download a training set there and put it into `examples/aanvraag_besluit/`.
 
-### 2. Make new predictions
+### 2. Model evaluation
+A model can be evaluated on a dataset using the `EvaluateModel` Jupyter notebook.
+First start the notebook server:
+
+    jupyter notebook
+    
+Then navigate to `src/notebook/EvaluateModel.ipynb`, change parameters for your use case and run everything.
+
+
+### 3. Make new predictions
 The model we trained in the previous step can be used to make predictions for new records/images. Below is an example 
 of how to use a small set taken from the object store which we've got defined in `input/small_set.csv`. To do this you 
 need to set a couple environment variables (manually set `BOUWDOSSIERS_OBJECTSTORE_PASSWORD` taken from Rattic above):
@@ -36,7 +49,6 @@ After this you can run the following from the `src/` folder:
     ./run_prediction.py ../input/small_set.csv
 
 After this has finished, the result can be found in `output/prediction/`
-
 
 ## Domain model
 The stadsarchief datasets consistist of scans along with metadata.

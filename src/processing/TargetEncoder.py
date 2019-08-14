@@ -26,3 +26,4 @@ class TargetEncoder:
         target_file = os.path.join(directory, 'target_encoder.npy')
         categories = np.load(target_file)
         self.encoder.categories_ = categories
+        self.encoder._legacy_mode = False  # required so .transform call succeeds. Normally this is set properly when calling .fit

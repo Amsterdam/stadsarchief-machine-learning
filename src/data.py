@@ -2,12 +2,29 @@ import glob
 import logging
 import math
 import os
+from dataclasses import dataclass
 
 import numpy as np
 import yaml
 from PIL import Image
 
 log = logging.getLogger(__name__)
+
+
+@dataclass()
+class DataBlock:
+    images_raw: np.ndarray  # Sometimes referred to as "Xraw"
+    images: np.ndarray
+    labels_raw: np.ndarray  # Sometimes referred to as "Zraw"
+    labels: np.ndarray
+    meta: np.ndarray  # Sometimes referred to as "Yraw"
+
+
+@dataclass()
+class DataGrouping:
+    train: DataBlock
+    valid: DataBlock
+    test: DataBlock
 
 
 def load_yaml(path):
