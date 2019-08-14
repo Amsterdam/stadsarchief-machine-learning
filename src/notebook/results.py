@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import accuracy_score, recall_score
 
+from src.notebook.image_display import show_prediction_images
 from src.evaluation import confusion_matrix, classification_report
 from src.evaluation.split_report import split_dataframe
 from src.predict.threshold import split_uncertain
@@ -48,7 +49,9 @@ def combined_report(
         predictions_oh: np.ndarray,
         ids: np.ndarray,
         label_encoder,
-        threshold: float
+        threshold: float,
+        images: np.ndarray,
+        show_images=False
 ):
     assert true_oh.shape[1] == 2, 'expecting binary one hot inputs'
     assert true_oh.shape == predictions_oh.shape
@@ -59,13 +62,16 @@ def combined_report(
     pred = label_encoder.inverse_transform(predictions_oh)
     is_correct = true == pred
 
-    results = split_uncertain(predictions_oh, threshold, [true, pred, is_correct, ids])
+    results = split_uncertain(predictions_oh, threshold, [true, pred, is_correct, ids, images, true_oh, predictions_oh])
 
     [
         true_splits,
         pred_splits,
         is_correct_splits,
-        ids_splits
+        ids_splits,
+        images_splits,
+        true_oh_splits,
+        pred_oh_splits,
     ] = results
 
     certain_count = true_splits[0].shape[0]
@@ -128,8 +134,24 @@ def combined_report(
 
     incorrect_ids = certain_ids[certain_is_incorrect]
 
+
     show_max = 50
     print(f'found {len(incorrect_ids)} incorrect examples')
     print(f'incorrect ids[:{show_max}]:')
     print('\n'.join(incorrect_ids[:show_max]))
 
+    if show_images:
+        squeezed = np.squeeze(certain_is_incorrect)
+        incorrect_images = images_splits[0][squeezed]
+        incorrect_true_oh = true_oh_splits[0][squeezed]
+        incorrect_pred_oh = pred_oh_splits[0][squeezed]
+        show_prediction_images(
+            incorrect_images,
+            incorrect_true_oh,
+            incorrect_pred_oh,
+            incorrect_ids,
+            label_encoder,
+            show_max
+        )
+
+    return incorrect_ids

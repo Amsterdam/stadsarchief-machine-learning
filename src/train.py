@@ -56,7 +56,7 @@ def train_model(
     valid_data: DataBlock = data.valid
     data_generator = config.data_generator
 
-    run_name = 'massive_set_shuffle_split_aanvraag_1:1.2_heavy_aug_model_g_dropout_.6_lr.0003_nog_keer'
+    run_name = 'massive_set_relabel_aanvraag_1:2_heavy_aug_model_g_dropout_.6_lr.0003'
     run_log_dir = os.path.join(log_dir, run_name)
     shutil.rmtree(run_log_dir, ignore_errors=True)
 

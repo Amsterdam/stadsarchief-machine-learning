@@ -184,8 +184,8 @@ def main():
     # learning_rate=0.00003
 
     train_config = TrainingConfiguration(
-        # epochs=150,
-        epochs=4,
+        epochs=150,
+        # epochs=4,
         batch_size=20,
         optimizer=keras.optimizers.Adam(lr=learning_rate),
         data_generator=data_generator,
