@@ -193,7 +193,7 @@ def load_data_aanvraag(img_dim, random_state=42):
     # Validation = subset of inputs set
     # (hold out) Test = subset of inputs set
     count = Img_in.shape[0]
-    splits = [int(.55 * count), int(.99 * count)]
+    splits = [int(.6 * count), int(0.8 * count)]
     log.info(f'splits: {splits}')
     Img_in, Data_in, Label_in = shuffle(Img_in, Data_in, Label_in, random_state=random_state)
     [Img_train_extra, Img_valid, Img_test] = np.vsplit(Img_in, splits)
