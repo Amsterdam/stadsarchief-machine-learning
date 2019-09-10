@@ -7,6 +7,7 @@ Pillow
 tensorflow-gpu==1.5
 scikit-learn
 pandas
+werkzeug>=0.15.3
 
 httpx  # async http calls
 
