@@ -21,11 +21,21 @@ node {
         checkout scm
     }
 
+    def image
 
     stage("Build develop image") {
         tryStep "build", {
-            def image = docker.build("repo.data.amsterdam.nl/datapunt/stadsarchief-ml:${env.BUILD_NUMBER}", "./src")
+            image = docker.build("repo.data.amsterdam.nl/datapunt/stadsarchief-ml:${env.BUILD_NUMBER}")
             image.push()
+        }
+    }
+
+    stage("Test") {
+        tryStep "Test", {
+            image.inside {
+                sh '/app/run_tests.sh'
+                sh '/app/run_linting.sh'
+            }
         }
     }
 }

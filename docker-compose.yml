@@ -3,7 +3,6 @@ services:
   predict:
     build: .
     volumes:
-      - ./src/:/app
       - ./input:/app/input
       - ./output:/app/output
     environment:
@@ -12,4 +11,4 @@ services:
       - IIIF_API_ROOT
       - IIIF_CACHE_DIR
       - BOUWDOSSIERS_OBJECTSTORE_PASSWORD
-    command: "python /app/run_prediction.py"
+    command: "/app/run_tests.sh && /app/run_linting.sh"
