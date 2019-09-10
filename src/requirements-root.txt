@@ -8,6 +8,7 @@ Tensorflow
 scikit-learn
 pandas
 datapunt-objectstore
+werkzeug>=0.15.3
 
 httpx  # async http calls
 
