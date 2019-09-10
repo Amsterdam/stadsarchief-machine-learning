@@ -14,3 +14,4 @@ RUN mkdir -p /cache && chown datapunt /cache
 USER datapunt
 
 COPY . /app/
+COPY run_* /app/

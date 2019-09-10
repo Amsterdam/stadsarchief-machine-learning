@@ -4,10 +4,10 @@ import numpy as np
 from PIL import Image
 from keras.engine.saving import model_from_json
 
-from predict.config import TRANSFORM_DIR, IIIF_API_ROOT, IIIF_CACHE_DIR, MODEL_JSON, MODEL_WEIGHTS
-from predict.iiif import IIIFClient
-from processing.ImageFeatureEncoder import ImageFeatureEncoder
-from processing.TargetEncoder import TargetEncoder
+from src.iiif.iiif import IIIFClient
+from src.predict.config import TRANSFORM_DIR, IIIF_API_ROOT, IIIF_CACHE_DIR, MODEL_JSON, MODEL_WEIGHTS
+from src.processing.ImageFeatureEncoder import ImageFeatureEncoder
+from src.processing.TargetEncoder import TargetEncoder
 
 log = logging.getLogger(__name__)
 
@@ -43,5 +43,3 @@ def predict_single(path):
     confidence = np.max(result)
 
     return [category, confidence]
-
-

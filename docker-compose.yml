@@ -1,7 +1,7 @@
 version: '2.0'
 services:
   predict:
-    build: ./src/
+    build: .
     volumes:
       - ./src/:/app
       - ./input:/app/input

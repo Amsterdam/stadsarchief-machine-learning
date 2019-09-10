@@ -10,10 +10,10 @@ import time
 
 import pandas as pd
 
-from objectstore_lib import upload_file
-from predict.config import OUTPUT_DIR
-from predict.iiif import HttpErrorCode
-from predict.predict import predict_single, iiifClient
+from src.objectstore_lib import upload_file
+from src.predict.config import OUTPUT_DIR
+from src.iiif.iiif import HttpErrorCode
+from src.predict.predict import predict_single, iiifClient
 
 log_level = logging.INFO
 root = logging.getLogger()

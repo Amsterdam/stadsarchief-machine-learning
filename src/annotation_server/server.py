@@ -5,9 +5,9 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import logging
 
-from annotation_server.PredictionData import PredictionData
+from src.annotation_server.PredictionData import PredictionData
+from src.iiif.iiif_url import get_image_url
 from .LabelData import LabelData
-from predict.iiif_url import get_image_url
 
 log = logging.getLogger(__name__)
 

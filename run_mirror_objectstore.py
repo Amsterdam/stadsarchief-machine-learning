@@ -1,7 +1,7 @@
 import os
 import sys
 
-from objectstore_lib import get_all_files
+from src.objectstore_lib import get_all_files
 
 assert len(sys.argv) == 2
 tmp_dir = sys.argv[1]

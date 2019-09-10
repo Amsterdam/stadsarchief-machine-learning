@@ -4,8 +4,8 @@ import pandas as pd
 
 def create_matrix(
         y_true: np.ndarray,
-        y_pred: np.ndarray,
-    ):
+        y_pred: np.ndarray
+):
     assert y_true.shape[1] == 1, 'expecting column vector (not one hot encoded vector)'
     assert y_true.shape == y_pred.shape
 

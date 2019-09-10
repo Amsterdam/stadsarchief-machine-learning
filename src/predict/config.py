@@ -1,7 +1,6 @@
 import os
 
-IIIF_API_ROOT = os.getenv("IIIF_API_ROOT")
-assert IIIF_API_ROOT is not None
+IIIF_API_ROOT = os.getenv("IIIF_API_ROOT", 'https://images.data.amsterdam.nl/iiif/2/')
 
 IIIF_CACHE_DIR = os.getenv("IIIF_CACHE_DIR")
 assert IIIF_CACHE_DIR is not None

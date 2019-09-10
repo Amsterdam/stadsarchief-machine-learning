@@ -157,6 +157,6 @@ def retrieve_dataset(csv_path, out_image_dir, out_label_dir, write_label=False):
         print(f'row count, {row_idx}')
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     retrieve_dataset(input_csv, out_img_dir, out_label_dir, write_label=WRITE_LABEL)
     print(f'done')

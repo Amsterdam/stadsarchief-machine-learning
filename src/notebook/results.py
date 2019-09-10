@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import accuracy_score, recall_score
 
-from src.notebook.image_display import show_prediction_images
 from src.evaluation import confusion_matrix, classification_report
 from src.evaluation.split_report import split_dataframe
 from src.predict.threshold import split_uncertain
@@ -90,7 +89,6 @@ def combined_report(
         print(f'certain examples:\t\t{Color.BOLD}{round(certain_percentage, 1)}%{Color.END}')
     print(f'uncertain examples:\t\t{Color.BOLD}{round(uncertain_percentage, 1)}%{Color.END}')
 
-
     print()
     print()
     print(counts_df.round(2))
@@ -128,7 +126,6 @@ def combined_report(
     certain_is_incorrect = np.invert(certain_is_correct)
 
     incorrect_ids = certain_ids[certain_is_incorrect]
-
 
     show_max = 50
     print(f'found {len(incorrect_ids)} incorrect examples')

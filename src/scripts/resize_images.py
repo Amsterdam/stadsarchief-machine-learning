@@ -50,5 +50,5 @@ def resize_dir(input_dir, target_dir, dim):
             im_resize.save(target_file, 'JPEG', quality=90)
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     resize_dir(INPUT_DIR, TARGET_DIR, TARGET_DIMS)

@@ -68,13 +68,13 @@ class FeatureEncoder(object):
 
         enc = self.transformers['dossier_type']
         n = len(enc.classes_)
-        dossier_type = data_enc[:, idx:idx+n, np.newaxis]
+        dossier_type = data_enc[:, idx:idx + n, np.newaxis]
         dossier_type_dec = enc.inverse_transform(dossier_type)
         idx += n
 
         enc = self.transformers['stadsdeel_code']
         n = len(enc.classes_)
-        stadsdeel_code = data_enc[:, idx:idx+n]
+        stadsdeel_code = data_enc[:, idx:idx + n]
         stadsdeel_code_dec = enc.inverse_transform(stadsdeel_code)
         stadsdeel_code_dec = stadsdeel_code_dec.reshape(-1, 1)
         assert stadsdeel_code_dec.ndim == 2
