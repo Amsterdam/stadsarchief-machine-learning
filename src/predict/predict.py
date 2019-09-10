@@ -1,5 +1,4 @@
 import logging
-from urllib.error import HTTPError
 
 import numpy as np
 from PIL import Image
