@@ -5,13 +5,13 @@ import pandas as pd
 from sklearn.utils import shuffle
 
 from src.data import build_ids, load_X, load_yaml_ids
-from .load_y import create_Z
-from .filter import filter_unlabeled, filter_unchecked, filter_unknown
+from src.processing.filter import filter_unlabeled, filter_unchecked, filter_unknown
+from src.processing.load_y import create_Z
 
 log = logging.getLogger(__name__)
 
 
-def getInt(value: str):
+def string_to_int(value: str):
     try:
         return int(value)
     except TypeError:
@@ -61,7 +61,7 @@ def process_attributes(Ymeta: list):
     data = []
     for y in Ymeta:
         row_data = {}
-        row_data['dossier_jaar'] = getInt(y.get('dossier_jaar', 2050.0))
+        row_data['dossier_jaar'] = string_to_int(y.get('dossier_jaar', 2050.0))
         row_data['dossier_type'] = y.get('dossier_type', 'onbekend')
         row_data['stadsdeel_code'] = y.get('stadsdeel_code', 'onbekend')
         row_data['reference'] = y.get('reference')

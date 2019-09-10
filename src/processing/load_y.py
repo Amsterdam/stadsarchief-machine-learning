@@ -28,8 +28,6 @@ def create_Z(Ymeta, verbose=False):
     if verbose:
         print('--- reducing ---')
         print('\n'.join(classes))
-    assert Ytype.shape == Yfilter.shape
 
-    # Yfilter = Yfilter.reshape(-1, 1)
-    # assert Yfilter.ndim == 2
+    assert Ytype.shape == Yfilter.shape
     return Yfilter

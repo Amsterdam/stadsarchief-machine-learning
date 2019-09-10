@@ -1,6 +1,10 @@
+"""
+Resizes all images in INPUT_DIR and stores them in TARGET_DIR
+"""
+
 import PIL
 from PIL import Image
-import os, sys
+import os
 
 # INPUT_DIR = "beeldbank-scraped_set/full/"
 # INPUT_DIR = "architect_set_object_recognition/full/"
@@ -46,4 +50,5 @@ def resize_dir(input_dir, target_dir, dim):
             im_resize.save(target_file, 'JPEG', quality=90)
 
 
-resize_dir(INPUT_DIR, TARGET_DIR, TARGET_DIMS)
+if __name__== "__main__":
+    resize_dir(INPUT_DIR, TARGET_DIR, TARGET_DIMS)
