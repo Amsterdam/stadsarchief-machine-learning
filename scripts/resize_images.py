@@ -6,15 +6,10 @@ import PIL
 from PIL import Image
 import os
 
-# INPUT_DIR = "beeldbank-scraped_set/full/"
-# INPUT_DIR = "architect_set_object_recognition/full/"
 INPUT_DIR = "aanvraag_besluit/src/data/"
 
-TARGET_DIMS = (250, 250,)
-# TARGET_DIMS = (400, 400,)
 TARGET_DIMS = (800, 800,)
-# TARGET_DIR = f"beeldbank-scraped_set/{TARGET_DIMS[0]}x{TARGET_DIMS[1]}/"
-# TARGET_DIR = f"architect_set_object_recognition/{TARGET_DIMS[0]}x{TARGET_DIMS[1]}/"
+
 TARGET_DIR = f"aanvraag_besluit/resized/{TARGET_DIMS[0]}x{TARGET_DIMS[1]}/"
 
 

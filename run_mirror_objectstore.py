@@ -1,3 +1,6 @@
+"""
+Mirror remote object store directory to file system
+"""
 import os
 import sys
 

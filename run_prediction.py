@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+"""
+Run Stadsarchief model from object store on dataset.
+"""
+
 import asyncio
 import logging
 import os
@@ -40,6 +45,7 @@ if SKIP_PREDICTION:
 
 
 results = []
+
 
 @dataclass()
 class abData:
