@@ -13,6 +13,7 @@ RUN mkdir -p /output && chown datapunt /output && chmod ga+w /output
 RUN mkdir -p /cache && chown datapunt /cache
 
 COPY src /app/src
+COPY scripts /app/scripts
 COPY run_* /app/
 
 USER datapunt
