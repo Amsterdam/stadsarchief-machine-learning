@@ -1,3 +1,10 @@
+"""
+Read BWT dataset from CSV file and write meta data to YAML file and fetch images from IIIF image server.
+
+Meta data is copied as is from csv file.
+IIIF url is constructed from relevant parts.
+"""
+
 import csv
 import sys
 import time
@@ -9,30 +16,31 @@ from urllib.error import HTTPError
 import yaml
 import os
 
-IIIF_API_ROOT = os.environ.get('IIIF_API_ROOT')
-assert IIIF_API_ROOT
+from src.iiif.iiif_url import get_image_url
+
+IIIF_API_ROOT = os.environ.get('IIIF_API_ROOT', 'https://images.data.amsterdam.nl/iiif/2/')
 
 assert len(sys.argv) == 3
 dataset_dir = sys.argv[1]
 input_csv = sys.argv[2]
 
-out_label_dir = os.path.join(dataset_dir, 'labels/')
-out_img_dir = os.path.join(dataset_dir, 'images/')
-
-
+# List of image dimensions to download from IIIF server
 TARGET_DIMS = [
     (250, 250,),
     # (400, 400,),
     (800, 800,),
-    # (1200, 1200,),
 ]
 
-WRITE_LABEL = True  # Write label file
-OVERWRITE_LABEL = False  # Overwrite existing label files
-MAX_CNT = 99999
+WRITE_LABEL = True  # Write label or not file
+OVERWRITE_LABEL = False  # Overwrite existing label files?
+MAX_CNT = 99999  # Artificial limit on how many examples to process, useful for debugging
 
 
-def write_labelfile(id, data):
+out_label_dir = os.path.join(dataset_dir, 'labels/')
+out_img_dir = os.path.join(dataset_dir, 'images/')
+
+
+def write_label_file(id, data):
     filename = f"{out_label_dir}/{id}.yaml"
 
     exists = os.path.isfile(filename)
@@ -66,15 +74,8 @@ def actually_download(url, target_file):
 
 
 def download_image(img_dir, stadsdeel_code, dossier_nummer, filename):
-    basename, ext = os.path.splitext(filename)
-    document_part = f'{stadsdeel_code}/{str(dossier_nummer).zfill(5)}/{basename}{ext.lower()}'
-
-    # print(document_part)
-    document_encoded = urllib.parse.quote_plus(document_part)
-    # print(document_encoded)
-
     for dim in TARGET_DIMS:
-        url = f'{IIIF_API_ROOT}{document_encoded}/full/{dim[0]},{dim[1]}/0/default.jpg'
+        url = get_image_url(IIIF_API_ROOT, stadsdeel_code, dossier_nummer, filename, dim)
         target_file = os.path.join(get_dimension_dir(img_dir, dim), filename)
         print(f'{url} -> {target_file}')
 
@@ -83,6 +84,17 @@ def download_image(img_dir, stadsdeel_code, dossier_nummer, filename):
             print(f'skipping download, file exists: {filename}')
         else:
             actually_download(url, target_file)
+
+
+def check_csv_header(row):
+    # Expected CSV Format:
+    assert row[0] == "stadsdeel_code", f'expected stadsdeel_code, actual: {row[0]}'
+    assert row[1] == "dossier_nummer", f'expected dossier_nummer, actual: {row[1]}'
+    assert row[2] == "dossier_type", f'expected dossier_type, actual: {row[2]}'
+    assert row[3] == "dossier_jaar", f'expected dossier_jaar, actual: {row[3]}'
+    assert row[4] == "file_naam", f'expected file_naam, actual: {row[4]}'
+    assert row[5] == "iiif_url", f'expected iiif_url, actual: {row[5]}'
+    # Row[6] == type, optional
 
 
 def retrieve_dataset(csv_path, out_image_dir, out_label_dir, write_label=False):
@@ -100,8 +112,9 @@ def retrieve_dataset(csv_path, out_image_dir, out_label_dir, write_label=False):
         skip_cnt = 0
         for row in csv_reader:
             print(f'{row_idx}: {row}')
-
-            if row_idx != 0:  # skip header
+            if row_idx == 0:
+                check_csv_header(row)
+            else:
                 if len(row) > 7:
                     print(f'skipping invalid row: {row_idx}: {row}')
                     skip_cnt += 1
@@ -116,10 +129,7 @@ def retrieve_dataset(csv_path, out_image_dir, out_label_dir, write_label=False):
                     filename = row[4]
 
                     basename, _ = os.path.splitext(filename)
-                    # print(basename)
                     id = basename
-
-                    # url = row[5]
 
                     stadsdeel_code = row[0]
                     dossier_nummer = row[1]
@@ -130,7 +140,7 @@ def retrieve_dataset(csv_path, out_image_dir, out_label_dir, write_label=False):
                         print(f'Download failed row: {row_idx}: {row}, {e}')
                         skip_cnt += 1
                     if write_label:
-                        write_labelfile(id, {
+                        write_label_file(id, {
                             'reference': filename,
                             'type': type,
                             'stadsdeel_code': stadsdeel_code,
@@ -143,9 +153,10 @@ def retrieve_dataset(csv_path, out_image_dir, out_label_dir, write_label=False):
             if row_idx >= MAX_CNT:
                 break
 
-        print(f'done')
         print(f'skipped {skip_cnt}')
         print(f'row count, {row_idx}')
 
 
-retrieve_dataset(input_csv, out_img_dir, out_label_dir, write_label=WRITE_LABEL)
+if __name__ == "__main__":
+    retrieve_dataset(input_csv, out_img_dir, out_label_dir, write_label=WRITE_LABEL)
+    print(f'done')

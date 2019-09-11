@@ -14,4 +14,3 @@ def split_dataframe(certain: int, uncertain: int) -> pd.DataFrame:
         index=['absolute', 'relative']
     )
     return counts_df
-

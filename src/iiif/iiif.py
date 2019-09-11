@@ -4,8 +4,8 @@ import os
 import httpx
 from httpx.exceptions import HttpError, Timeout
 
-from predict.config import IIIF_TIMEOUT
-from predict.iiif_url import get_image_url
+from src.predict.config import IIIF_TIMEOUT
+from .iiif_url import get_image_url
 
 log = logging.getLogger(__name__)
 

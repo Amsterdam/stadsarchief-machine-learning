@@ -7,7 +7,7 @@ current state is work in progress for the specific aim to classify bouwdossiers 
 It is possible to both train a new model, and use the resulting model to get predictions for new input.
 
 ### 0. Install
-Install requirements.txt, possibly inside a virtualenv.
+Install `requirements/requirements.txt`, possibly inside a virtualenv.
 
 For **GPU support** install `tensorflow-gpu` instead of `tensorflow`.
 GPU support is practically required for training.

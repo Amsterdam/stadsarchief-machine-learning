@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-pycodestyle src
+python -m unittest

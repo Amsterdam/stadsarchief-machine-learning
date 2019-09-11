@@ -142,7 +142,7 @@ def evaluate_model(model, data: DataGrouping):
     log.info(f'Test accuracy: {valid_acc_str}')
 
     log.info("train predictions, truth")
-    predictions_train =  model.predict(data.train.images, verbose=1)
+    predictions_train = model.predict(data.train.images, verbose=1)
     show_prediction_list(predictions_train, data.train.labels)
 
     log.info("test predictions, truth")
@@ -179,9 +179,9 @@ def main():
         channel_shift_range=0.15,
     )
 
-    learning_rate=0.0003
-    # learning_rate=0.0001
-    # learning_rate=0.00003
+    learning_rate = 0.0003
+    # learning_rate = 0.0001
+    # learning_rate = 0.00003
 
     train_config = TrainingConfiguration(
         epochs=150,

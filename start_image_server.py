@@ -1,11 +1,14 @@
 """
 Flask app serving images from multiple directories (static file server)
+
+e.g.:
+python run_image_server.py datasets/dataset_0/images/250x250/ datasets/dataset_1_mixed_hand_annotated/resized/800x800/
 """
 import logging
 import os
 import sys
 
-from image_server.server import create_app
+from src.image_server.server import create_app
 
 log_level = logging.DEBUG
 root = logging.getLogger()

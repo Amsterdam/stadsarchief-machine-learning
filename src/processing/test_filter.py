@@ -47,7 +47,7 @@ class TestFilter(TestCase):
         ids = ['id1', 'id2', 'id3', 'id4']
         yaml_filtered, ids_filtered = filter_unknown(yaml, ids)
 
-        self.assertSequenceEqual(ids_filtered, ['id1', 'id3', 'id4' ])
+        self.assertSequenceEqual(ids_filtered, ['id1', 'id3', 'id4'])
         self.assertSequenceEqual(yaml_filtered, [
             {'type': 'bar', 'otherprop': 'a'},
             {'type': 'xyz', 'otherprop': 'c'},

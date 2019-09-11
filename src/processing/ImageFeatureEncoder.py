@@ -29,4 +29,3 @@ class ImageFeatureEncoder:
     def load(self, directory):
         target_file = os.path.join(directory, 'image_encoder.npy')
         self.shape = np.load(target_file, self.shape)
-

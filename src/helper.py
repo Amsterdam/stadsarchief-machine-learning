@@ -34,12 +34,6 @@ def create_model_dirs(model_dir):
     return model_dir, transform_dir
 
 
-# def print_shapes():
-#     things = ('Xtrain', 'Ytrain', 'Ztrain', 'Xvalid', 'Yvalid', 'Zvalid')
-#     for thing in things:
-#         print(f"shape {thing}: ")
-
-
 def feature_preprocess(Xtrain_raw, Xvalid_raw):
     imageEncoder = ImageFeatureEncoder()
 
@@ -68,5 +62,3 @@ def label_preprocessing(Ztrain_raw, Zvalid_raw, num_classes=2):
     labels = np.array([['aanvraag'], ['other']])
 
     return classes, Ztrain, Zvalid, labelEncoder, labels
-
-
