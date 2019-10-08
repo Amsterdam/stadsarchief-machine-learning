@@ -19,8 +19,7 @@ Training a model is still done using:
     python run_training.py
 
 After running a model is written to `output/model/`. The added training set is very small 
-and doesn't give you a very good model. To do serious training you can use more data from the object store 
-`9d078258c1a547c09e0b5f88834554f1:bouwdossiers` (credentials are under the name `cloudVPS Bouwdossiers` in Rattic). 
+and doesn't give you a very good model. To do serious training you can use more data from the object store (credentials are under the name `cloudVPS Bouwdossiers` in Rattic). 
 Download a training set there and put it into `examples/aanvraag_besluit/`.
 
 ### 2. Model evaluation
@@ -37,7 +36,7 @@ The model we trained in the previous step can be used to make predictions for ne
 of how to use a small set taken from the object store which we've got defined in `input/small_set.csv`. To do this you 
 need to set a couple environment variables (manually set `BOUWDOSSIERS_OBJECTSTORE_PASSWORD` taken from Rattic above):
 
-    export BOUWDOSSIERS_OBJECTSTORE_PASSWORD=pRLNa@uwhHVmqL8Z
+    export BOUWDOSSIERS_OBJECTSTORE_PASSWORD=xxx
     export PYTHONUNBUFFERED=1
     export IIIF_API_ROOT=https://acc.images.data.amsterdam.nl/iiif/2/edepot:
     export IIIF_CACHE_DIR=./cache
