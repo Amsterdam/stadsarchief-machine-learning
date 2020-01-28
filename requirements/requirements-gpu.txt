@@ -4,7 +4,7 @@ jupyter
 matplotlib
 scipy
 Pillow
-tensorflow-gpu==1.5
+tensorflow-gpu==1.15.2
 scikit-learn
 pandas
 werkzeug>=0.15.3
